@@ -168,15 +168,34 @@
     <!-- Sejarah -->
     <section id="sejarah" class="py-16 bg-white">
       <div class="max-w-5xl mx-auto px-6">
-        <h3 class="text-3xl font-semibold text-center mb-8 text-primary">Sejarah Bukit Trunyan</h3>
-        <div class="md:flex items-center gap-8">
-         <img src="img/sj.jpeg" 
-            alt="Sejarah Bukit Trunyan"  
-            class="w-full md:w-1/2 h-72 object-cover rounded-xl shadow-lg mb-6 md:mb-0">
+        <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Kisah & Sejarah Bukit Trunyan</h3>
 
-          <p class="text-justify leading-relaxed text-gray-700 md:w-1/2">
-            Bukit Trunyan terletak di tepi timur Danau Batur, Kintamani, dan terkenal dengan keindahan alamnya yang memukau serta tradisi unik masyarakat Trunyan. Desa ini dikenal dengan sistem pemakaman kuno di bawah pohon Taru Menyan yang mengeluarkan aroma wangi alami. Bukit Trunyan menjadi destinasi wisata budaya dan alam yang memadukan keindahan dan spiritualitas Bali kuno, serta menjadi lokasi populer untuk tracking dan wisata virtual dengan panorama Danau Batur dan Gunung Abang di kejauhan.
-          </p>
+        <div class="p-8 bg-gray-50 rounded-2xl shadow-xl border border-gray-200">
+          
+          <div class="md:flex items-start gap-10">
+            
+            <div class="md:w-1/2 mb-6 md:mb-0">
+              <p class="text-justify leading-relaxed text-lg text-gray-700">
+                Bukit Trunyan terletak di tepi timur Danau Batur, Kintamani, dan terkenal dengan keindahan alamnya yang memukau serta tradisi unik masyarakat Trunyan. Desa ini dikenal dengan sistem pemakaman kuno di bawah pohon "Taru Menyan" yang mengeluarkan aroma wangi alami yang dipercaya menetralkan bau.
+              </p>
+              <p class="text-justify leading-relaxed text-lg text-gray-700 mt-4">
+                Tradisi ini merupakan peninggalan Bali Aga (Bali Mula) yang berbeda dengan tradisi kremasi (Ngaben) pada umumnya. Bukit Trunyan menjadi destinasi wisata budaya dan alam yang memadukan keindahan dan spiritualitas Bali kuno, serta menjadi lokasi populer untuk tracking dengan panorama Danau Batur dan Gunung Abang di kejauhan.
+              </p>
+              <a href="#informasi" class="inline-block mt-6 px-5 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                Lihat Selengkapnya &raquo;
+              </a>
+            </div>
+            
+            <div class="md:w-1/2">
+              <img 
+                src="{{ asset('img/sj.jpeg') }}" 
+                alt="Pemandangan Desa dan Danau Batur"  
+                class="w-full h-80 object-cover rounded-xl shadow-2xl border-4 border-white transform hover:scale-[1.02] transition duration-300">
+              <p class="text-center text-sm text-gray-500 mt-2 italic">Desa Trunyan dan pemakaman kuno di bawah pohon Taru Menyan.</p>
+            </div>
+            
+          </div>
+          
         </div>
       </div>
     </section>
@@ -184,10 +203,10 @@
     <!-- Informasi -->
     <section id="informasi" class="py-16 bg-gray-100">
       <div class="max-w-6xl mx-auto px-6">
-        <h3 class="text-3xl font-semibold text-center mb-10 text-primary">Informasi Wisata</h3>
+        <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Informasi Wisata</h3>
         <div class="grid md:grid-cols-3 gap-8 text-center">
           <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
-            <h4 class="text-xl font-bold mb-2 text-primary">📍 Lokasi</h4>
+            <h4 class="text-xl font-bold mb-2 text-gray-800">📍 Lokasi</h4>
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3931.643703793837!2d115.41210807460473!3d-8.271874882694598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd1e5ecb8b0c6e3%3A0xd3d2e896d11db8e3!2sDesa%20Trunyan%2C%20Kintamani%2C%20Bangli!5e0!3m2!1sid!2sid!4v1707725120211!5m2!1sid!2sid"
               width="100%"
@@ -198,15 +217,15 @@
             ></iframe>
           </div>
           <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
-            <h4 class="text-xl font-bold mb-2 text-primary">Harga Tiket</h4>
+            <h4 class="text-xl font-bold mb-2 text-gray-800">Harga Tiket</h4>
             <p>Dewasa: Rp 25.000<br />Anak-anak: Rp 15.000</p>
           </div>
           <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
-            <h4 class="text-xl font-bold mb-2 text-primary">Waktu Buka</h4>
+            <h4 class="text-xl font-bold mb-2 text-gray-800">Waktu Buka</h4>
             <p>Setiap Hari<br />24 jam</p>
           </div>
         </div>
-         <h3 class="text-3xl font-semibold text-center mb-10 mt-20 text-primary">Informasi Track Pendakian</h3>
+         <h3 class="text-2xl font-semibold text-left mb-10 mt-20 text-black">Informasi Track Pendakian</h3>
       </div>
     </section>
 
