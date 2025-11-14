@@ -52,7 +52,7 @@
             
             <div>
                 <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                        placeholder="Email/Username"
+                        placeholder="Email"
                         class="w-full px-1 py-2 bg-transparent border-b-2 border-primary text-white placeholder-placeholder-custom focus:outline-none focus:border-green-400">
             </div>
             

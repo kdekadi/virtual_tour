@@ -175,13 +175,13 @@
           <div class="md:flex items-start gap-10">
             
             <div class="md:w-1/2 mb-6 md:mb-0">
-              <p class="text-justify leading-relaxed text-lg text-gray-700">
+              <p class="text-justify leading-relaxed text-base text-gray-700">
                 Bukit Trunyan terletak di tepi timur Danau Batur, Kintamani, dan terkenal dengan keindahan alamnya yang memukau serta tradisi unik masyarakat Trunyan. Desa ini dikenal dengan sistem pemakaman kuno di bawah pohon "Taru Menyan" yang mengeluarkan aroma wangi alami yang dipercaya menetralkan bau.
               </p>
-              <p class="text-justify leading-relaxed text-lg text-gray-700 mt-4">
+              <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">
                 Tradisi ini merupakan peninggalan Bali Aga (Bali Mula) yang berbeda dengan tradisi kremasi (Ngaben) pada umumnya. Bukit Trunyan menjadi destinasi wisata budaya dan alam yang memadukan keindahan dan spiritualitas Bali kuno, serta menjadi lokasi populer untuk tracking dengan panorama Danau Batur dan Gunung Abang di kejauhan.
               </p>
-              <a href="#informasi" class="inline-block mt-6 px-5 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
+              <a href="#informasi" class="inline-block mt-6 px-5 py-2 text-base bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
                 Lihat Selengkapnya &raquo;
               </a>
             </div>
