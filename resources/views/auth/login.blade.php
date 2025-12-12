@@ -5,31 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login | Virtual Tour Bukit Trunyan</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-      tailwind.config = {
-        theme: {
-            extend: {
-                fontFamily: {
-                    sans: ['Poppins', 'sans-serif'],
-                },
-                colors: {
-                    primary: "#16a34a",
-                    light: "#f0fdf4",
-                    // BARIS BARU: Menambahkan warna kustom Anda
-                    'placeholder-custom': '#6F8567',
-                },
-            },
-        },
-      };
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body class="h-screen bg-cover bg-center flex items-center justify-center relative"
       style="background-image: url('{{ asset('img/11.jpg') }}');">
 
-    <div class="bg-gray-900 bg-opacity-80 w-full max-w-md p-8 rounded-xl shadow-lg">
-        
+    <div class="w-full max-w-md p-8 rounded-xl shadow-lg"
+     style="background-color: rgba(17, 24, 39, 0.8);">
+
+
+
         <h2 class="text-3xl font-bold text-center text-white mb-2">
             Login
         </h2>
@@ -69,7 +55,7 @@
         </form>
 
         <div class="text-center text-sm text-placeholder-custom mt-6">
-            <p>
+            <p class="text-gray-400">
                 Belum punya akun?
                 <a href="{{ route('register') }}" class="font-medium text-primary hover:underline">
                     Daftar di sini

@@ -30,3 +30,8 @@ Route::get('/profil', function () {
     return 'Profil Pengunjung'; // Langsung kirim teks
 })->middleware('auth')->name('profil');
 
+Route::get('/sejarah', function () {
+    return view('sejarah');
+})->name('sejarah.lengkap');
+
+

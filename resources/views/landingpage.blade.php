@@ -4,25 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Virtual Tour Bukit Trunyan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {{-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> --}}
     {{-- <link rel="icon" href="https://img.icons8.com/emoji/48/mountain.png" /> --}}
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-                sans: ['Poppins', 'sans-serif'],
-            },
-            colors: {
-              primary: "#16a34a",
-              light: "#f0fdf4",
-            },
-          },
-        },
-      };
-    </script>
     <style>
       html {
         scroll-behavior: smooth;
@@ -181,7 +166,7 @@
               <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">
                 Tradisi ini merupakan peninggalan Bali Aga (Bali Mula) yang berbeda dengan tradisi kremasi (Ngaben) pada umumnya. Bukit Trunyan menjadi destinasi wisata budaya dan alam yang memadukan keindahan dan spiritualitas Bali kuno, serta menjadi lokasi populer untuk tracking dengan panorama Danau Batur dan Gunung Abang di kejauhan.
               </p>
-              <a href="#informasi" class="inline-block mt-6 px-5 py-2 text-base bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
+              <a href="/sejarah" class="inline-block mt-6 px-5 py-2 text-base bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
                 Lihat Selengkapnya &raquo;
               </a>
             </div>
@@ -217,15 +202,86 @@
             ></iframe>
           </div>
           <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
-            <h4 class="text-xl font-bold mb-2 text-gray-800">Harga Tiket</h4>
-            <p>Dewasa: Rp 25.000<br />Anak-anak: Rp 15.000</p>
+            <h4 class="text-xl font-bold mb-3 text-gray-800 text-center">
+                Rincian Biaya Pendakian
+            </h4>
+    
+                <p class="text-gray-700 leading-relaxed text-center">
+                    Harga Parkir: 
+                    <span class="font-bold text-green-700">Rp 10.000</span><br>
+                    Loket 1 (Tiket Kawasan): 
+                    <span class="font-bold text-green-700">Rp 10.000</span><br>
+                    Loket 2 (Retribusi Jalur): 
+                    <span class="font-bold text-green-700">Rp 10.000</span>
+                </p>
+
+                <p class="mt-3 pt-3 border-t border-gray-300 font-extrabold text-lg text-gray-900 text-center">
+                    TOTAL MINIMAL: Rp 30.000
+                </p>
+
+                <p class="mt-4 text-xs text-gray-500 italic text-center">
+                    *Biaya ini belum termasuk tiket umum (dewasa/anak) dan jasa pemandu.
+                </p>
           </div>
           <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
-            <h4 class="text-xl font-bold mb-2 text-gray-800">Waktu Buka</h4>
-            <p>Setiap Hari<br />24 jam</p>
-          </div>
+    <h4 class="text-xl font-bold mb-3 text-gray-800 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Waktu Operasional
+    </h4>
+    <div class="space-y-2 text-gray-700">
+        <p class="font-semibold text-lg">
+            <span class="text-primary block mb-1">Hari:</span>
+            Setiap Hari (Senin - Minggu)
+        </p>
+        <p class="font-semibold text-lg pt-2 border-t border-gray-200">
+            <span class="text-primary block mb-1">Jam:</span>
+            <strong class="text-green-700 text-2xl">24 Jam</strong>
+        </p>
+    </div>
+    <p class="mt-4 text-xs text-gray-500 italic">
+        *Pendakian malam/subuh sangat disarankan untuk melihat *sunrise*.
+    </p>
+</div>
         </div>
-         <h3 class="text-2xl font-semibold text-left mb-10 mt-20 text-black">Informasi Track Pendakian</h3>
+         {{-- <h3 class="text-2xl font-semibold text-left mb-10 mt-20 text-black">Informasi Track Pendakian</h3> --}}
+
+      <div class="bg-gray-100  mt-20 rounded-xl max-w-6xl mx-auto text-gray-700">
+        <!-- Deskripsi Singkat -->
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Deskripsi Singkat</h3>
+          <p class="leading-relaxed mb-8 text-justify">
+              Bukit Trunyan merupakan jalur pendakian ringan dengan panjang trek sekitar <strong>2–3 km</strong> 
+              dan waktu tempuh <strong>1 hingga 1,5 jam</strong>. Jalur pendakiannya melewati hutan yang rindang, 
+              pepohonan besar, serta beberapa tanjakan pendek yang masih aman untuk pemula. Setibanya di puncak, 
+              pengunjung akan menemukan area viewpoint yang menyuguhkan panorama indah Danau Batur, Gunung Abang, 
+              serta megahnya Gunung Batur dari ketinggian. 
+              <br><br>
+              Desa Trunyan sendiri merupakan wilayah Bali Aga yang masih menjaga kearifan lokal dan tradisi leluhur. 
+              Oleh karena itu, wisatawan dihimbau untuk selalu menghormati adat istiadat setempat serta tidak memasuki 
+              area atau pura yang bersifat sakral. Fasilitas dasar seperti parkir, warung, dan toilet tersedia di area 
+              desa, namun di jalur pendakian fasilitas sangat terbatas. Pendaki dianjurkan membawa air minum, menyiapkan 
+              peralatan pribadi yang memadai, serta menggunakan sepatu yang nyaman dan aman. 
+              <br><br>
+              Waktu terbaik untuk melakukan pendakian adalah pagi hari, terutama pukul <strong>04.30 – 06.00 WITA</strong>, 
+              untuk mendapatkan momen sunrise yang optimal serta cuaca yang lebih sejuk. Sementara itu, sore hari juga 
+              menjadi pilihan menarik bagi pengunjung yang ingin menikmati keindahan alam tanpa terik matahari yang kuat.
+          </p>
+
+        <!-- Tips Singkat -->
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">Tips Singkat</h3>
+          <ul class="list-disc pl-6 space-y-2">
+              <li>Gunakan sepatu trekking atau sepatu dengan grip yang baik.</li>
+              <li>Bawa minimal 600ml air minum dan camilan ringan.</li>
+              <li>Hindari pendakian saat hujan karena jalur menjadi licin.</li>
+              <li>Hormati adat lokal dan jangan memasuki area sakral.</li>
+              <li>Buang sampah pada tempatnya dan jaga kebersihan jalur.</li>
+              <li>Sinyal seluler mungkin lemah di beberapa titik jalur.</li>
+              <li>Bawa senter atau headlamp jika mendaki subuh atau sore.</li>
+              <li>Gunakan pakaian yang nyaman dan siap untuk cuaca dingin.</li>
+          </ul>
+      </div>
+
       </div>
     </section>
 
@@ -302,52 +358,6 @@
     <footer class="bg-primary text-white py-6 text-center">
       <p>© 2025 Virtual Tour Bukit Trunyan | Dikembangkan untuk Project PBL</p>
     </footer>
-
-    <!-- Script interaktif -->
-    <script>
-    window.addEventListener('scroll', function() {
-    const navbar = document.getElementById('navbar');
-    const links = document.getElementById('navLinks');
-    const buttons = document.getElementById('navButtons');
-
-  if (window.scrollY > 50) {
-    // di skrol
-    navbar.classList.remove('bg-transparent');
-    navbar.classList.add('bg-white', 'shadow-md');
-
-    // Link navbar
-    links.classList.remove('text-white');
-    links.classList.add('text-black');
-
-    // Tombol login/register
-    buttons.querySelectorAll('a').forEach(btn => {
-      btn.classList.remove('text-white', 'border-white');
-      btn.classList.add('text-black', 'border-gray-400');
-    });
-  } else {
-    // di atas 
-    navbar.classList.remove('bg-white', 'shadow-md');
-    navbar.classList.add('bg-transparent');
-
-    // Link navbar
-    links.classList.remove('text-black');
-    links.classList.add('text-white');
-
-    // Tombol login register
-    buttons.querySelectorAll('a').forEach(btn => {
-      btn.classList.remove('text-black', 'border-gray-400');
-      btn.classList.add('text-white', 'border-white');
-    });
-  }
-});
-
-// Navbar mobilenya
-const menuBtn = document.getElementById("menu-btn");
-const mobileMenu = document.getElementById("mobileMenu");
-menuBtn.addEventListener("click", () => {
-  mobileMenu.classList.toggle("hidden");
-});
-
-    </script>
+   
   </body>
 </html>

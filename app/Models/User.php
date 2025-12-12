@@ -27,7 +27,7 @@ class User extends Authenticatable implements FilamentUser, HasName
 
     protected $table = 'users';
     protected $primaryKey = 'id_users';
-    public $timestamps = false; // karena di tabel kamu tidak ada created_at & updated_at
+    public $timestamps = false; 
 
     protected $fillable = [
         'username',
