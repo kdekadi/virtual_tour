@@ -2,11 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ContentWeb;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 
 class PageController extends Controller
 {
+
+     public function edit()
+    {
+        return view('edit_profil', [
+            'user' => Auth::user()
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'username'   => 'required|string|max:45',
+            'email'      => 'required|email|max:100|unique:users,email,' . $user->id_users . ',id_users',
+            'nomor_telp' => 'nullable|string|max:45',
+            'password'   => 'nullable|min:6|confirmed',
+        ]);
+
+        $user->username   = $request->username;
+        $user->email      = $request->email;
+        $user->nomor_telp = $request->nomor_telp;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('profil')
+            ->with('success', 'Profil berhasil diperbarui');
+    }
+        public function profil()
+{
+    $user = Auth::user(); // otomatis ambil dari tabel users
+
+    return view('profil', compact('user'));
+}
+
+    
+
    public function index()
 {
     $sejarah_home = ContentWeb::with('images')
@@ -54,6 +98,7 @@ class PageController extends Controller
 
 
 }
+
     public function showSejarah()
     {
         $judul_sejarah = ContentWeb::with('images')
