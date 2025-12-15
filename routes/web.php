@@ -3,9 +3,11 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 //lp
-Route::get('/', function () {
-    return view('landingpage');
-});
+// Route::get('/', function () {
+//     return view('landingpage');
+// });
+
+Route::get('/', [PageController::class, 'index'])->name('home');
 // Rute untuk menampilkan form login
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
@@ -30,8 +32,12 @@ Route::get('/profil', function () {
     return 'Profil Pengunjung'; // Langsung kirim teks
 })->middleware('auth')->name('profil');
 
-Route::get('/sejarah', function () {
-    return view('sejarah');
-})->name('sejarah.lengkap');
+// Route::get('/sejarah', function () {
+//     return view('sejarah');
+// })->name('sejarah.lengkap');
+
+Route::get('/sejarah', [PageController::class, 'showSejarah'])->name('sejarah.lengkap');
+
+
 
 

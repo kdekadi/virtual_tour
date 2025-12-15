@@ -61,11 +61,21 @@
                         class="absolute right-0 mt-2 w-48 bg-gray-100 rounded-md shadow-lg py-1 z-50 text-black"
                         style="display: none;">
                 
-                        <!-- Link Profil -->
+                        {{-- <!-- Link Profil -->
                         <a href="{{ route('profil') }}" 
                           class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50">
                             Profil
-                        </a>
+                        </a> --}}
+
+                        @if (Auth::user()->role === 'admin')
+                            <a href="/admin" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50">
+                                Dashboard Admin
+                            </a>
+                        @else
+                            <a href="{{ route('profil') }}"  class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50">
+                                Profil
+                            </a>
+                        @endif
                 
                         <!-- Logout  -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -79,6 +89,7 @@
                 </div>
 
             @else
+                
                 <a href="{{ route('login') }}"
                   class="px-4 py-2 border border-white text-white rounded-lg hover:bg-green-500 hover:border-green-200 transition">
                     Log in
@@ -141,11 +152,17 @@
     >
       <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/40"></div>
       <div class="relative text-center text-white px-4">
-        <h2 class="text-5xl font-extrabold mb-4">Virtual Tour 360 Bukit Trunyan</h2>
-        <p class="text-lg mb-6 max-w-2xl mx-auto">
-          Rasakan pengalaman menjelajah track pendakian Bukit Trunyan secara virtual.
-          Nikmati pemandangan dan suasana seolah berada langsung di sana.
+         @if ($heading_hero) 
+        <h2 class="text-5xl font-extrabold mb-4">
+            {!! $heading_hero->isi_content_web !!}
+        </h2>
+        @endif
+        @if ($deskripsi_hero)
+        <p class="text-2xl mb-6 max-w-2xl mx-auto">
+          {!! $deskripsi_hero->isi_content_web !!}
         </p>
+        @endif
+        <br>
         <a href="#" class="bg-primary hover:bg-green-800 text-white px-8 py-3 rounded-lg font-semibold transition">Mulai Virtual Tour</a>
       </div>
     </section>
@@ -153,30 +170,47 @@
     <!-- Sejarah -->
     <section id="sejarah" class="py-16 bg-white">
       <div class="max-w-5xl mx-auto px-6">
-        <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Kisah & Sejarah Bukit Trunyan</h3>
 
+        @if($heading_sejarah_home)
+        <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">
+          {!! $heading_sejarah_home->isi_content_web !!}
+        </h3>
+        @else
+            <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Konten Belum Diatur</h3>
+        @endif
         <div class="p-8 bg-gray-50 rounded-2xl shadow-xl border border-gray-200">
           
           <div class="md:flex items-start gap-10">
             
             <div class="md:w-1/2 mb-6 md:mb-0">
-              <p class="text-justify leading-relaxed text-base text-gray-700">
-                Bukit Trunyan terletak di tepi timur Danau Batur, Kintamani, dan terkenal dengan keindahan alamnya yang memukau serta tradisi unik masyarakat Trunyan. Desa ini dikenal dengan sistem pemakaman kuno di bawah pohon "Taru Menyan" yang mengeluarkan aroma wangi alami yang dipercaya menetralkan bau.
-              </p>
-              <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">
-                Tradisi ini merupakan peninggalan Bali Aga (Bali Mula) yang berbeda dengan tradisi kremasi (Ngaben) pada umumnya. Bukit Trunyan menjadi destinasi wisata budaya dan alam yang memadukan keindahan dan spiritualitas Bali kuno, serta menjadi lokasi populer untuk tracking dengan panorama Danau Batur dan Gunung Abang di kejauhan.
-              </p>
+              
+               @if ($sejarah_home)
+                <div class="text-justify break-words">
+                  {!! $sejarah_home->isi_content_web !!}
+                </div>  
+
+                @else
+                <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten Sejarah belum diatur.</p>
+                @endif
+              
+
               <a href="/sejarah" class="inline-block mt-6 px-5 py-2 text-base bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
                 Lihat Selengkapnya &raquo;
               </a>
             </div>
             
             <div class="md:w-1/2">
+            @if (isset($gmbr_sejarah_home) && $gmbr_sejarah_home->images->count() > 0)
+            @foreach ($gmbr_sejarah_home->images as $image)
               <img 
-                src="{{ asset('img/sj.jpeg') }}" 
-                alt="Pemandangan Desa dan Danau Batur"  
+                 src="{{ asset('storage/' . $image->image_path) }}"
+                alt="Gambar Sejarah Trunyan"  
                 class="w-full h-80 object-cover rounded-xl shadow-2xl border-4 border-white transform hover:scale-[1.02] transition duration-300">
               <p class="text-center text-sm text-gray-500 mt-2 italic">Desa Trunyan dan pemakaman kuno di bawah pohon Taru Menyan.</p>
+              @endforeach
+              @else
+                <p class="text-center text-xl text-gray-500 italic mt-8">Gambar belum ditambahkan.</p>
+              @endif
             </div>
             
           </div>
@@ -249,24 +283,23 @@
 
       <div class="bg-gray-100  mt-20 rounded-xl max-w-6xl mx-auto text-gray-700">
         <!-- Deskripsi Singkat -->
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">Deskripsi Singkat</h3>
+        @if($heading_informasi_1)
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">
+          {!! $heading_informasi_1->isi_content_web !!}
+        </h3>
+        @else
+            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+        @endif
+
+        @if($informasi_1)
           <p class="leading-relaxed mb-8 text-justify">
-              Bukit Trunyan merupakan jalur pendakian ringan dengan panjang trek sekitar <strong>2–3 km</strong> 
-              dan waktu tempuh <strong>1 hingga 1,5 jam</strong>. Jalur pendakiannya melewati hutan yang rindang, 
-              pepohonan besar, serta beberapa tanjakan pendek yang masih aman untuk pemula. Setibanya di puncak, 
-              pengunjung akan menemukan area viewpoint yang menyuguhkan panorama indah Danau Batur, Gunung Abang, 
-              serta megahnya Gunung Batur dari ketinggian. 
-              <br><br>
-              Desa Trunyan sendiri merupakan wilayah Bali Aga yang masih menjaga kearifan lokal dan tradisi leluhur. 
-              Oleh karena itu, wisatawan dihimbau untuk selalu menghormati adat istiadat setempat serta tidak memasuki 
-              area atau pura yang bersifat sakral. Fasilitas dasar seperti parkir, warung, dan toilet tersedia di area 
-              desa, namun di jalur pendakian fasilitas sangat terbatas. Pendaki dianjurkan membawa air minum, menyiapkan 
-              peralatan pribadi yang memadai, serta menggunakan sepatu yang nyaman dan aman. 
-              <br><br>
-              Waktu terbaik untuk melakukan pendakian adalah pagi hari, terutama pukul <strong>04.30 – 06.00 WITA</strong>, 
-              untuk mendapatkan momen sunrise yang optimal serta cuaca yang lebih sejuk. Sementara itu, sore hari juga 
-              menjadi pilihan menarik bagi pengunjung yang ingin menikmati keindahan alam tanpa terik matahari yang kuat.
+            {!! $informasi_1->isi_content_web !!}
           </p>
+          @else
+            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+          @endif
+        
+        <br>
 
         <!-- Tips Singkat -->
         <h3 class="text-2xl font-bold text-gray-900 mb-4">Tips Singkat</h3>
@@ -293,11 +326,18 @@
       <br>
 
       <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-8 px-8">
+        @if (isset($galeri) && $galeri->images->count() > 0)
+        @foreach ($galeri->images as $image)
         <div>
-          <img src="img/1.jpeg" alt="Bukit Trunyan"
+          <img 
+          src="{{ asset('storage/' . $image->image_path) }}" alt="Galeri Bukit Trunyan"
             class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
         </div>
-        <div>
+        @endforeach
+        @else
+          <p class="text-center text-xl text-gray-500 italic mt-8">Gambar galeri tidak ditemukan.</p>
+        @endif
+        {{-- <div>
           <img src="img/2.jpeg" alt="Bukit Trunyan"
             class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
         </div>
@@ -316,7 +356,7 @@
         <div>
           <img src="img/6.jpeg." alt="Bukit Trunyan"
             class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
-        </div>
+        </div> --}}
       </div>
     </section>
 
