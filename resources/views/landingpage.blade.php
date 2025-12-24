@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Virtual Tour Bukit Trunyan</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     {{-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> --}}
     {{-- <link rel="icon" href="https://img.icons8.com/emoji/48/mountain.png" /> --}}
@@ -144,6 +145,7 @@
     </nav>
 
 
+
     <!-- Hero -->
     <section
       id="home"
@@ -153,48 +155,41 @@
       <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/40"></div>
       <div class="relative text-center text-white px-4">
          @if ($heading_hero) 
-        <h2 class="text-5xl font-extrabold mb-4">
-            {!! $heading_hero->isi_content_web !!}
-        </h2>
+            <h2 class="text-5xl font-extrabold mb-4">
+              {!! $heading_hero->isi_content_web !!}
+            </h2>
         @endif
         @if ($deskripsi_hero)
-        <p class="text-2xl mb-6 max-w-2xl mx-auto">
-          {!! $deskripsi_hero->isi_content_web !!}
-        </p>
+            <p class="text-2xl mb-6 max-w-2xl mx-auto">
+              {!! $deskripsi_hero->isi_content_web !!}
+           </p>
         @endif
         <br>
         <a href="#" class="bg-primary hover:bg-green-800 text-white px-8 py-3 rounded-lg font-semibold transition">Mulai Virtual Tour</a>
       </div>
     </section>
 
+
+
     <!-- Sejarah -->
     <section id="sejarah" class="py-16 bg-white">
       <div class="max-w-5xl mx-auto px-6">
-
         @if($heading_sejarah_home)
-        <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">
-          {!! $heading_sejarah_home->isi_content_web !!}
-        </h3>
+            <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">
+              {!! $heading_sejarah_home->isi_content_web !!}
+            </h3>
         @else
             <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Konten Belum Diatur</h3>
         @endif
-        <div class="p-8 bg-gray-50 rounded-2xl shadow-xl border border-gray-200">
-          
+        <div class="p-8 bg-gray-50 rounded-2xl shadow-xl border border-gray-200">         
           <div class="md:flex items-start gap-10">
-            
-            <div class="md:w-1/2 mb-6 md:mb-0">
-              
+            <div class="md:w-1/2 mb-6 md:mb-0 text-justify"> 
                @if ($sejarah_home)
-                <div class="text-justify break-words">
                   {!! $sejarah_home->isi_content_web !!}
-                </div>  
-
                 @else
-                <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten Sejarah belum diatur.</p>
+                  <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten Sejarah belum diatur.</p>
                 @endif
-              
-
-              <a href="/sejarah" class="inline-block mt-6 px-5 py-2 text-base bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
+                <a href="/sejarah" class="inline-block mt-6 px-5 py-2 text-base bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
                 Lihat Selengkapnya &raquo;
               </a>
             </div>
@@ -203,27 +198,26 @@
             @if (isset($gmbr_sejarah_home) && $gmbr_sejarah_home->images->count() > 0)
             @foreach ($gmbr_sejarah_home->images as $image)
               <img 
-                 src="{{ asset('storage/' . $image->image_path) }}"
-                alt="Gambar Sejarah Trunyan"  
-                class="w-full h-80 object-cover rounded-xl shadow-2xl border-4 border-white transform hover:scale-[1.02] transition duration-300">
+                  src="{{ asset('storage/' . $image->image_path) }}"
+                  alt="Gambar Sejarah Trunyan"  
+                  class="w-full h-80 object-cover rounded-xl shadow-2xl border-4 border-white transform hover:scale-[1.02] transition duration-300">
               <p class="text-center text-sm text-gray-500 mt-2 italic">Desa Trunyan dan pemakaman kuno di bawah pohon Taru Menyan.</p>
               @endforeach
               @else
                 <p class="text-center text-xl text-gray-500 italic mt-8">Gambar belum ditambahkan.</p>
               @endif
             </div>
-            
           </div>
-          
         </div>
       </div>
     </section>
+
 
     <!-- Informasi -->
     <section id="informasi" class="py-16 bg-gray-100">
       <div class="max-w-6xl mx-auto px-6">
         <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Informasi Wisata</h3>
-        <div class="grid md:grid-cols-3 gap-8 text-center">
+        <div class="grid md:grid-cols-4 gap-8 text-center">
           <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
             <h4 class="text-xl font-bold mb-2 text-gray-800">📍 Lokasi</h4>
             <iframe
@@ -237,51 +231,72 @@
           </div>
           <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
             <h4 class="text-xl font-bold mb-3 text-gray-800 text-center">
-                Rincian Biaya Pendakian
+                Rincian Biaya
             </h4>
-    
+                @if($biaya_pendakian)
                 <p class="text-gray-700 leading-relaxed text-center">
-                    Harga Parkir: 
-                    <span class="font-bold text-green-700">Rp 10.000</span><br>
-                    Loket 1 (Tiket Kawasan): 
-                    <span class="font-bold text-green-700">Rp 10.000</span><br>
-                    Loket 2 (Retribusi Jalur): 
-                    <span class="font-bold text-green-700">Rp 10.000</span>
+                    {!! $biaya_pendakian->isi_content_web !!}    
                 </p>
-
-                <p class="mt-3 pt-3 border-t border-gray-300 font-extrabold text-lg text-gray-900 text-center">
-                    TOTAL MINIMAL: Rp 30.000
-                </p>
-
-                <p class="mt-4 text-xs text-gray-500 italic text-center">
-                    *Biaya ini belum termasuk tiket umum (dewasa/anak) dan jasa pemandu.
-                </p>
-          </div>
-          <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
-    <h4 class="text-xl font-bold mb-3 text-gray-800 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        Waktu Operasional
-    </h4>
-    <div class="space-y-2 text-gray-700">
-        <p class="font-semibold text-lg">
-            <span class="text-primary block mb-1">Hari:</span>
-            Setiap Hari (Senin - Minggu)
-        </p>
-        <p class="font-semibold text-lg pt-2 border-t border-gray-200">
-            <span class="text-primary block mb-1">Jam:</span>
-            <strong class="text-green-700 text-2xl">24 Jam</strong>
-        </p>
+                @else
+                  <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+                @endif
+              </div>
+            <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
+      <h4 class="text-xl font-bold mb-3 text-gray-800 flex items-center justify-center">
+          Waktu Operasional
+      </h4>
+      @if($waktu_operasional)
+      <div class="space-y-2">
+          <p class="text-gray-700 leading-relaxed text-center">           
+              {!! $waktu_operasional->isi_content_web !!}
+          </p>
+          @else
+              <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+          @endif
+      </div>
+      <p class="mt-4 text-xs text-gray-500 italic">
+          Pendakian subuh sangat disarankan untuk melihat sunrise.
+      </p>
     </div>
-    <p class="mt-4 text-xs text-gray-500 italic">
-        *Pendakian malam/subuh sangat disarankan untuk melihat *sunrise*.
-    </p>
-</div>
-        </div>
-         {{-- <h3 class="text-2xl font-semibold text-left mb-10 mt-20 text-black">Informasi Track Pendakian</h3> --}}
+      <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition flex flex-col justify-between">
+        <div>
+          <h4 class="text-xl font-bold mb-3 text-gray-800 flex items-center justify-center">
+            Cuaca Hari Ini
+        </h4>
+        @if(isset($data) && $data)
+            <div class="flex flex-col items-center py-2">
+                <div class="flex items-center space-x-2">
+                    <img src="http://openweathermap.org/img/wn/{{ $data['weather'][0]['icon'] }}@2x.png" 
+                         class="w-16 h-16" alt="weather-icon">
+                    <span class="text-4xl font-bold text-gray-800">{{ round($data['main']['temp']) }}°C</span>
+                </div>
+                
+                <p class="text-lg font-medium text-green-600 capitalize">
+                    {{ $data['weather'][0]['description'] }}
+                </p>
 
-      <div class="bg-gray-100  mt-20 rounded-xl max-w-6xl mx-auto text-gray-700">
+                <div class="grid grid-cols-2 gap-4 mt-4 w-full border-t border-gray-100 pt-4">
+                    <div class="text-center">
+                        <p class="text-xs text-gray-500">Kelembapan</p>
+                        <p class="font-semibold text-gray-700">{{ $data['main']['humidity'] }}%</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xs text-gray-500">Tekanan Udara</p>
+                        <p class="font-semibold text-gray-700">{{ $data['wind']['speed'] }} m/s</p>
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="py-10 text-center">
+                <p class="text-gray-400 italic text-sm">Data cuaca tidak tersedia</p>
+            </div>
+        @endif
+    </div>
+</div>
+    </div>
+         {{-- <h3 class="text-2xl font-semibold text-left mb-10 mt-20 text-black">Informasi Track Pendakian</h3> --}}
+  
+      <div class="bg-gray-100 text-justify  mt-20 rounded-xl max-w-6xl mx-auto text-gray-700">
         <!-- Deskripsi Singkat -->
         @if($heading_informasi_1)
         <h3 class="text-2xl font-bold text-gray-900 mb-4">
@@ -302,7 +317,13 @@
         <br>
 
         <!-- Tips Singkat -->
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">Tips Singkat</h3>
+        @if($heading_informasi_2)
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">
+          {!! $heading_informasi_2->isi_content_web !!}
+        </h3>
+        @else
+            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+        @endif
           <ul class="list-disc pl-6 space-y-2">
               <li>Gunakan sepatu trekking atau sepatu dengan grip yang baik.</li>
               <li>Bawa minimal 600ml air minum dan camilan ringan.</li>
@@ -337,61 +358,14 @@
         @else
           <p class="text-center text-xl text-gray-500 italic mt-8">Gambar galeri tidak ditemukan.</p>
         @endif
-        {{-- <div>
-          <img src="img/2.jpeg" alt="Bukit Trunyan"
-            class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
-        </div>
-        <div>
-          <img src="img/3.jpeg" alt="Bukit Trunyan"
-            class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
-        </div>
-        <div>
-          <img src="img/4.jpeg" alt="Bukit Trunyan"
-            class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
-        </div>
-        <div>
-          <img src="img/5.jpeg" alt="Bukit Trunyan"
-            class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
-        </div>
-        <div>
-          <img src="img/6.jpeg." alt="Bukit Trunyan"
-            class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
-        </div> --}}
       </div>
     </section>
 
 
     <!-- Komentar -->
     <section id="komentar" class="py-16 bg-white">
-      <div class="max-w-4xl mx-auto px-6">
-        <h3 class="text-3xl font-semibold text-center mb-10 text-primary">Komentar Pengunjung</h3>
-
-        <div id="commentList" class="space-y-4 mb-6 max-h-72 overflow-y-auto pr-2">
-          <div class=" p-4 rounded-lg shadow">
-           
-          </div>
-        </div>
-
-        <div class="flex items-center bg-gray-100 rounded-lg p-3 shadow-md">
-          <input
-            type="text"
-            id="newComment"
-            placeholder="Tulis komentar..."
-            class="flex-grow px-4 py-2 bg-white rounded-lg focus:outline-none border border-green-200 focus:ring-2 focus:ring-green-400"
-          />
-          <button
-            id="sendComment"
-            class="ml-3 bg-primary hover:bg-green-500 text-white p-3 rounded-full transition"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-        <p class="text-xs text-gray-500 mt-2">*Hanya pengguna yang sudah login dapat mengirim komentar*.</p>
-        <br>
-          <div class="bg-gray-200 rounded-lg shadow-inner w-full max-w-[103%] h-40"></div>
-      </div>
+        <h3 class="text-3xl font-bold text-center mb-12">Komentar Pengunjung</h3>
+        @livewire('komentar-section')
     </section>
 
     <!-- Footer -->

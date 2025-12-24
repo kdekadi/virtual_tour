@@ -4,7 +4,7 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-   <title>Document</title>
+   <title>Sejarah Lengkap Bukit Trunyan</title>
    @vite(['resources/css/app.css', 'resources/js/app.js'])
    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
@@ -12,9 +12,9 @@
 
 <section id="sejarah" class="py-20 bg-neutral-100">
     <div class="max-w-4xl mx-auto px-6">
-         @if ($judul_sejarah)
+         @if ($judul_sejarah_lengkap_1)
         <h3 class="text-4xl font-serif font-bold text-center mb-12 text-gray-800 tracking-wider">
-          {!! $judul_sejarah->isi_content_web !!}
+          {!! $judul_sejarah_lengkap_1->isi_content_web !!}
           </h3>
         
         @endif
@@ -44,25 +44,43 @@
             <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
             @endif
             
+            @if($heading_sejarah_lengkap_1)
             <h4 class="text-2xl font-serif font-bold text-red-900 mb-4 tracking-wide">
-                Misteri Pemakaman Taru Menyan
+                {!! $judul_sejarah_lengkap_1->isi_content_web !!}
             </h4>
+            @else
+            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+            @endif
 
-            <p class="text-justify leading-relaxed text-lg font-serif text-stone-800 mb-6">
-                Tradisi paling mencengangkan adalah sistem adat kematian mereka. Jauh dari kremasi atau penguburan, jenazah diletakkan di bawah pohon keramat **Taru Menyan**. Pohon ini melepaskan aroma wangi nan kuat yang diyakini menetralkan bau jenazah, sebuah fenomena alam yang menguatkan spiritualitas kuno Trunyan.
+            @if($sejarah_lengkap_2)
+            <p class="text-justify leading-relaxed text-xl font-serif text-stone-800 mb-6 border-b border-stone-300 pb-4">
+                <div class="text-justify break-words">
+                {!! $sejarah_lengkap_2->isi_content_web !!}
+                </div>
             </p>
+             @else
+            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+            @endif
+            <br>
             
-            <p class="text-justify leading-relaxed text-lg font-serif text-stone-800">
-                Trunyan saat ini tidak hanya menjadi saksi bisu sejarah, tetapi juga destinasi budaya yang memadukan keindahan alam Danau Batur dengan spiritualitas Bali kuno, menjadikannya lokasi penting untuk *tracking*.
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus incidunt eum dolor nemo culpa! A nisi sunt amet harum, cumque pariatur rem animi itaque dignissimos deserunt sapiente voluptate. Corrupti, ullam!
-                uptatem distinctio illum laboriosam veritatis, aliquid ipsa. Libero atque sit, assumenda necessitatibus hic minima possimus praesentium beatae sint dolorum at dolores numquam a minus eius exercitationem ipsum debitis facilis.
-                A enim voluptatibus, maxime reiciendis beatae commodi recusandae neque doloribus porro minus maiores magnam quaerat repudiandae ratione officiis, atque exercitationem quisquam vel totam culpa nobis ad temporibus. Libero, impedit numquam.
-                Illum inventore impedit quas doloremque exercitationem nesciunt qui, commodi molestiae sed quo magni, debitis ducimus laudantium mollitia excepturi minus animi ea unde? Tempore odio architecto corrupti odit animi dolorum illo.
-                Veritatis tempora iure nostrum delectus quibusdam cupiditate praesentium a quas explicabo incidunt sapiente laborum reprehenderit officia eum inventore numquam nesciunt libero labore, blanditiis ad fugit! Eius doloremque ad deleniti aliquam.
-                Beatae sed quidem molestiae soluta cumque distinctio, consequuntur dolorem aspernatur quae. Eos ipsa quaerat corporis consequuntur, dignissimos suscipit ab aliquam, sit perferendis provident porro libero aperiam accusantium aspernatur sapiente iusto?
-                Odio necessitatibus natus nobis incidunt libero, sit exercitationem quam tempora veritatis, non neque accusamus animi esse voluptas earum. Ducimus distinctio ipsum dignissimos officiis a ex cumque, earum fugit quae placeat.
-                At sapiente nemo laborum minima ducimus ab, minus consectetur vero enim illum itaque provident unde cumque corporis odio? Minus eveniet aliquid dicta officia inventore debitis totam magni veritatis, eos rem!
+             @if($judul_sejarah_lengkap_3)
+            <h4 class="text-2xl font-serif font-bold text-red-900 mb-4 tracking-wide">
+                {!! $judul_sejarah_lengkap_3->isi_content_web !!}
+            </h4>
+            @else
+            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+            @endif
+
+             @if($sejarah_lengkap_3)
+            <p class="text-justify leading-relaxed text-xl font-serif text-stone-800 mb-6 border-b border-stone-300 pb-4">
+                <div class="text-justify break-words">
+                {!! $sejarah_lengkap_3->isi_content_web !!}
+                </div>
             </p>
+             @else
+            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+            @endif
+
 
             <div class="text-left mt-8">
                 <a href="/#sejarah" class="inline-block px-8 py-3 text-lg bg-green-700 text-white font-bold rounded-lg shadow-xl hover:bg-green-800 transition transform hover:scale-105">

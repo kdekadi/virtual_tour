@@ -1,3 +1,11 @@
+const menuBtn = document.getElementById('menu-btn');
+const mobileMenu = document.getElementById('mobileMenu');
+
+menuBtn.addEventListener('click', () => {
+    // Membuka/menutup menu saat tombol diklik
+    mobileMenu.classList.toggle('hidden');
+});
+
 window.addEventListener('scroll', function() {
     const navbar = document.getElementById('navbar');
     const links = document.getElementById('navLinks');
@@ -42,3 +50,4 @@ window.addEventListener('scroll', function() {
         });
     }
 });
+

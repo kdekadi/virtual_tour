@@ -2,12 +2,20 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\WeatherController;
+use App\Http\Middleware\TrackVisitor;
+
 //lp
 // Route::get('/', function () {
 //     return view('landingpage');
 // });
 
+Route::middleware([TrackVisitor::class])->group(function () {
 Route::get('/', [PageController::class, 'index'])->name('home');
+Route::get('/sejarah', [PageController::class, 'showSejarah'])->name('sejarah.lengkap');
+
+});
+
 // Rute untuk menampilkan form login
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
@@ -36,7 +44,9 @@ Route::get('/profil', function () {
 //     return view('sejarah');
 // })->name('sejarah.lengkap');
 
-Route::get('/sejarah', [PageController::class, 'showSejarah'])->name('sejarah.lengkap');
+// Route::get('/sejarah', [PageController::class, 'showSejarah'])->name('sejarah.lengkap');
+
+Route::get('/virtual-tour-trunyan', [WeatherController::class, 'showTrunyanWeather']);
 
 
 
