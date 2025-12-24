@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
@@ -36,9 +37,18 @@ Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('
 // Rute untuk memproses data registrasi
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/profil', function () {
-    return 'Profil Pengunjung'; // Langsung kirim teks
-})->middleware('auth')->name('profil');
+Route::get('/profil', [PageController::class, 'profil'])
+    ->middleware('auth')
+    ->name('profil');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profil/edit', [PageController::class, 'edit'])
+        ->name('edit_profil');
+
+    Route::post('/profil/update', [PageController::class, 'update'])
+        ->name('profil.update');
+});
+
 
 // Route::get('/sejarah', function () {
 //     return view('sejarah');

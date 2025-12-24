@@ -2,13 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ContentWeb;
+// <<<<<<< HEAD
+// use Illuminate\Support\Facades\Http;
+// =======
+// use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Hash;
+// >>>>>>> 57b885980d8516b4fafd2495cfcbbd286293b85b
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
-
-
 class PageController extends Controller
 {
+
+     public function edit()
+    {
+        return view('edit_profil', [
+            'user' => Auth::user()
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'username'   => 'required|string|max:45',
+            'email'      => 'required|email|max:100|unique:users,email,' . $user->id_users . ',id_users',
+            'nomor_telp' => 'nullable|string|max:45',
+            'password'   => 'nullable|min:6|confirmed',
+        ]);
+
+        $user->username   = $request->username;
+        $user->email      = $request->email;
+        $user->nomor_telp = $request->nomor_telp;
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('profil')
+            ->with('success', 'Profil berhasil diperbarui');
+    }
+        public function profil()
+{
+    $user = Auth::user(); // otomatis ambil dari tabel users
+
+    return view('profil', compact('user'));
+}
+
+    
+
    public function index()
 {
    // 1. Ambil API Key dari .env
@@ -97,6 +146,7 @@ class PageController extends Controller
 
 
 }
+
     public function showSejarah()
     {
         $judul_sejarah_lengkap_1 = ContentWeb::with('images')

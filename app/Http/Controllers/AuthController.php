@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
+    
     // --- Method 1: Menampilkan Form ---
     public function showRegistrationForm()
     {
