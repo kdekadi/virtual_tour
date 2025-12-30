@@ -34,7 +34,6 @@ class VisitorChart extends ChartWidget implements HasActions
         return $years ?: [date('Y') => date('Y')];
     }
 
-     // FUNGSI TOMBOL CETAK
     protected function getActions(): array
     {
         return [
@@ -58,7 +57,6 @@ class VisitorChart extends ChartWidget implements HasActions
     protected function getData(): array
     {
         $activeFilter = $this->filter ?: date('Y');
-        // 2. Ambil data per bulan berdasarkan filter tahun
         $results = Visitor::selectRaw('MONTH(visit_date) as month, COUNT(*) as count')
             ->whereYear('visit_date', $activeFilter)
             ->groupBy('month')
@@ -66,7 +64,6 @@ class VisitorChart extends ChartWidget implements HasActions
             ->pluck('count', 'month')
             ->toArray();
 
-        // Susun array agar selalu ada 12 bulan (Jan-Des) meskipun datanya 0
         $data = [];
         for ($i = 1; $i <= 12; $i++) {
             $data[] = $results[$i] ?? 0;
@@ -78,21 +75,13 @@ class VisitorChart extends ChartWidget implements HasActions
                     'label' => 'Total Visitor',
                     'data' => $data,
                     'fill' => 'start',
-                    // 'backgroundColor' => '#000000ff', 
-                    // 'borderColor' => '#000000ff',
+                    'backgroundColor' => '3CB946', 
                     'borderRadius' => 4,
                 ],
             ],
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
         ];
-    }
-
-
-   
-
-    // ... Simpan fungsi getFilters() dan getData() Anda yang lama di sini ...
-
-    
+    }  
 
 //     protected function getOptions(): array
 // {
@@ -100,8 +89,8 @@ class VisitorChart extends ChartWidget implements HasActions
 //         'scales' => [
 //             'y' => [
 //                 'ticks' => [
-//                     'stepSize' => 1, // Memaksa kenaikan angka sebesar 1 (tidak desimal)
-//                     'precision' => 0, // Memastikan tidak ada angka di belakang koma
+//                     'stepSize' => 1, // Menek 1 angka
+//                     'precision' => 0, 
 //                 ],
 //             ],
 //         ],

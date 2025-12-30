@@ -46,7 +46,7 @@
             
             @if($heading_sejarah_lengkap_1)
             <h4 class="text-2xl font-serif font-bold text-red-900 mb-4 tracking-wide">
-                {!! $judul_sejarah_lengkap_1->isi_content_web !!}
+                {!! $heading_sejarah_lengkap_1->isi_content_web !!}
             </h4>
             @else
             <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>

@@ -13,14 +13,19 @@
                             ✕ Batal
                         </button>
                     </div>
-                @else
-                    <div></div>
-                @endif
-
+                @else      
+                @auth
                 <button wire:click="postComment"
                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm">
                     Kirim ➤
                 </button>
+                @else
+                <a href="{{ route('login') }}"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm">
+                    Kirim ➤
+                </a>
+                @endif
+                @endauth
             </div>
         </div>
     </div>
@@ -83,11 +88,5 @@
                 </div>
             @endforelse
         </div>
-
-        {{-- @if($comments->count() > 5)
-            <button class="text-green-600 text-[10px] font-bold mt-4 inline-block hover:underline">
-                Lihat komentar lainnya >>
-            </button>
-        @endif --}}
     </div>
 </div>

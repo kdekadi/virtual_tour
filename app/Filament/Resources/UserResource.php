@@ -43,12 +43,11 @@ class UserResource extends Resource
                     ])
                     ->required(),
 
-                // 2. Pengaturan khusus untuk Password
                 TextInput::make('password')
                     ->password() // Tipe input password
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state)) // Hash saat menyimpan
-                    ->dehydrated(fn ($state) => filled($state)) // Hanya simpan jika diisi
-                    ->required(fn (string $context): bool => $context === 'create') // Wajib saat 'Create'
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state)) 
+                    ->dehydrated(fn ($state) => filled($state)) 
+                    ->required(fn (string $context): bool => $context === 'create') 
             ]);
     }
 
@@ -56,10 +55,9 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                // INI ADALAH KOLOM YANG HILANG
                 TextColumn::make('username')
                     ->label('Username')
-                    ->searchable(), // Bisa dicari
+                    ->searchable(), 
                 
                 TextColumn::make('email')
                     ->label('Email')
@@ -67,7 +65,7 @@ class UserResource extends Resource
                 
                 TextColumn::make('role')
                     ->label('Role')
-                    ->sortable(), // Bisa di-sort
+                    ->sortable(), 
                 
                 TextColumn::make('nomor_telp')
                     ->label('Telepon'),

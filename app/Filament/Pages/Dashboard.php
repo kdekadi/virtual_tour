@@ -21,14 +21,14 @@ class Dashboard extends BaseDashboard
                     return Excel::download(new VisitorExport(date('Y')), 'laporan-visitor.xlsx');
                 }),
 
-            // Tombol ke Landing Page
-        // Action::make('openLandingPage')
-        //     ->label('Lihat Website')
-        //     ->icon('heroicon-m-globe-alt')
-        //     ->color('info')
-        //     ->url(url('/')) // Mengarah ke root URL (landing page)
-        //     ->openUrlInNewTab(), // Membuka di tab baru agar dashboard tidak tertutup
-        // 
+           
+        Action::make('openLandingPage')
+            ->label('Lihat Website')
+            ->icon('heroicon-m-globe-alt')
+            ->color('info')
+            ->url(url('/')) 
+            ->openUrlInNewTab(), 
+        
         ];
     }
 }

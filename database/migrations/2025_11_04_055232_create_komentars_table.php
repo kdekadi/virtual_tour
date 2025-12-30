@@ -15,12 +15,8 @@ return new class extends Migration
             $table->id('id_komentar'); // Sesuai ERD
             $table->string('isi_komentar', 255);
             $table->dateTime('waktu_komentar');
-
-            // Foreign Key ke tabel users
             $table->unsignedBigInteger('id_users');
             $table->foreign('id_users')->references('id_users')->on('users');
-
-            // Untuk nested comment (balasan)
             $table->unsignedBigInteger('parent_id')->nullable(); 
             $table->foreign('parent_id')->references('id_komentar')->on('komentar')->onDelete('cascade');
         });

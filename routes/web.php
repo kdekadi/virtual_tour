@@ -6,35 +6,28 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\WeatherController;
 use App\Http\Middleware\TrackVisitor;
 
-//lp
-// Route::get('/', function () {
-//     return view('landingpage');
-// });
-
+//Rute ane di Miidleware
 Route::middleware([TrackVisitor::class])->group(function () {
 Route::get('/', [PageController::class, 'index'])->name('home');
 Route::get('/sejarah', [PageController::class, 'showSejarah'])->name('sejarah.lengkap');
 
 });
 
-// Rute untuk menampilkan form login
+// Rute form login
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
-// Rute untuk memproses data login
+// Rute memproses data login
 Route::post('/login', [AuthController::class, 'login']);
 
-// Rute untuk menampilkan profil pengguna
+// Rute profil 
 Route::get('/profile', [PageController::class, 'profile'])
      ->middleware('auth')
      ->name('profile');
 
-// Rute untuk logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rute untuk menampilkan form registrasi
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 
-// Rute untuk memproses data registrasi
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/profil', [PageController::class, 'profil'])
@@ -49,12 +42,6 @@ Route::middleware('auth')->group(function () {
         ->name('profil.update');
 });
 
-
-// Route::get('/sejarah', function () {
-//     return view('sejarah');
-// })->name('sejarah.lengkap');
-
-// Route::get('/sejarah', [PageController::class, 'showSejarah'])->name('sejarah.lengkap');
 
 Route::get('/virtual-tour-trunyan', [WeatherController::class, 'showTrunyanWeather']);
 

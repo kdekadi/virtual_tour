@@ -3,14 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContentWeb;
-// <<<<<<< HEAD
-// use Illuminate\Support\Facades\Http;
-// =======
-// use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Auth;
-// use Illuminate\Support\Facades\Hash;
-// >>>>>>> 57b885980d8516b4fafd2495cfcbbd286293b85b
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -51,26 +43,20 @@ class PageController extends Controller
     }
         public function profil()
 {
-    $user = Auth::user(); // otomatis ambil dari tabel users
+    $user = Auth::user(); 
 
     return view('profil', compact('user'));
 }
 
-    
-
    public function index()
 {
-   // 1. Ambil API Key dari .env
+ 
     $apiKey = env('OPENWEATHER_API_KEY');
-    $lat = "-8.2530"; 
-    $lon = "115.4301";
-
-    // 2. Inisialisasi variabel data dengan null
+    $lat = "-8.2125"; 
+    $lon = "115.3835";
     $data = null;
 
     try {
-        // 3. Panggil API dengan Timeout (agar web tidak loading selamanya)
-        // withoutVerifying() digunakan jika kamu di localhost dan bermasalah dengan SSL
         $response = Http::timeout(5)->withoutVerifying()->get("https://api.openweathermap.org/data/2.5/weather", [
             'lat' => $lat,
             'lon' => $lon,
@@ -83,13 +69,12 @@ class PageController extends Controller
             $data = $response->json();
         }
     } catch (\Exception $e) {
-        // Jika API gagal, biarkan $data tetap null, web tidak akan error/mati
         \Log::error("Gagal koneksi ke OpenWeather: " . $e->getMessage());
     }
 
 
     $sejarah_home = ContentWeb::with('images')
-        ->where('nama_content_web', 'sejarah_home') // sesuaikan key 
+        ->where('nama_content_web', 'sejarah_home') 
         ->first();
 
     $heading_hero = ContentWeb::where('nama_content_web', 'heading_hero') 
@@ -125,6 +110,9 @@ class PageController extends Controller
     $waktu_operasional = ContentWeb::where('nama_content_web', 'waktu_operasional') 
         ->first();
 
+     $tips = ContentWeb::where('nama_content_web', 'tips') 
+        ->first();
+
     return view('landingpage', [
         'data' => $data,
         'sejarah_home' => $sejarah_home,
@@ -138,13 +126,8 @@ class PageController extends Controller
         'heading_informasi_2' => $heading_informasi_2,
         'biaya_pendakian' => $biaya_pendakian,
         'waktu_operasional' => $waktu_operasional,
-
+        'tips' => $tips,
     ]);
-
-   
-
-
-
 }
 
     public function showSejarah()

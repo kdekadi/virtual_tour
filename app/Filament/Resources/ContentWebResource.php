@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContentWebResource\Pages;
-use App\Filament\Resources\ContentWebResource\RelationManagers;
 use App\Models\ContentWeb;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,82 +10,103 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea; // Ganti RichEditor jika ingin teks sederhana
-use Filament\Forms\Components\RichEditor; 
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Hidden;
 
 class ContentWebResource extends Resource
 {
     protected static ?string $model = ContentWeb::class;
     protected static ?int $navigationSort = 2;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-folder-open';
     protected static ?string $navigationLabel = 'Content Web';
+
+
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            TextInput::make('nama_content_web')
-                ->label('Nama Content Web')
-                ->required()
-                ->unique(ignoreRecord: true)
-                ->maxLength(200),
-                // ->helperText('sejarah1')
+            ->schema([
+                Forms\Components\TextInput::make('label')
+                    ->label('Nama Konten')
+                    ->placeholder('Masukan Nama Konten Web')
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpan(1),
 
-            // Pilihan: Ganti RichEditor dengan Textarea jika Anda tidak ingin format HTML
-            RichEditor::make('isi_content_web') 
-            // Textarea::make('isi_content_web') 
-                ->label('Isi Konten Teks')
-                // ->required()
-                ->nullable()
-                ->columnSpanFull(), 
+                Forms\Components\TextInput::make('nama_content_web')
+                    ->label('Key Sistem (ID)')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(200)
+                    ->hidden(fn ($context) => $context === 'edit') 
+                    ->visible(fn ($context) => $context === 'create')
+                    ->helperText('Gunakan format snake_case. Contoh: sejarah_home'),
 
-            // 3. SOLUSI: HIDDEN FIELD UNTUK ID_USERS
-                Hidden::make('id_users')
-                    ->default(Auth::id()) // Ambil ID pengguna yang sedang login
-                    ->required(), // Meskipun hidden, tetap wajib diisi karena di DB NOT NULL
+                Forms\Components\RichEditor::make('isi_content_web') 
+                    ->label('Isi Konten Teks')
+                    ->nullable()
+                    ->columnSpanFull(), 
 
-            // Repeater untuk Mengelola Gambar (Tabel content_image)
-            Repeater::make('images')
-                ->relationship('images') 
-                ->label('Gambar')
-                ->schema([
-                    FileUpload::make('image_path')->directory('content-images')
-                        ->label('Upload Gambar')
-                        // ->required()
-                        ->image()
-                        ->directory('content-images') // Folder di storage/app/public/
-                        ->visibility('public')
-                        ->disk('public'), 
-                ])
-                ->columns(1)
-                ->columnSpanFull()
-                ->createItemButtonLabel('Tambah Gambar Baru'),
-        ])->columns(2);
+                Forms\Components\Hidden::make('id_users')
+                    ->default(Auth::id())
+                    ->required(),
+
+                Forms\Components\Repeater::make('images')
+                    ->relationship('images') 
+                    ->label('Koleksi Gambar')
+                    ->schema([
+                        Forms\Components\FileUpload::make('image_path')
+                            ->label('Upload Gambar')
+                            ->image()
+                            ->directory('content-images') 
+                            ->visibility('public')
+                            ->disk('public'), 
+                    ])
+                    ->columnSpanFull()
+                    ->createItemButtonLabel('Tambah Gambar Baru'),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-           ->columns([
-            TextColumn::make('nama_content_web')->searchable()->sortable(),
-            TextColumn::make('isi_content_web')->label('Ringkasan Konten')->limit(50)->html(), 
-            TextColumn::make('images_count')->counts('images')->label('Jml Gambar')->badge(),
-            TextColumn::make('user.username')->label('Diubah Oleh')->default('Admin Sistem'), 
-            TextColumn::make('updated_at')->dateTime()->label('Terakhir Update')->sortable(),
+            ->columns([
+                Tables\Columns\TextColumn::make('label')
+                    ->label('Nama Konten')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold')
+                    ->default(fn ($record) => str($record->nama_content_web)->replace('_', ' ')->title()),
+
+                Tables\Columns\TextColumn::make('isi_content_web')
+                    ->label('Ringkasan Konten')
+                    ->limit(40)
+                    ->html()
+                    ->color('gray'),
+
+                Tables\Columns\TextColumn::make('images_count')
+                    ->counts('images')
+                    ->label('Gambar')
+                    ->badge()
+                    ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
+                    ->alignCenter(),
+
+                Tables\Columns\TextColumn::make('user.username')
+                    ->label('Diubah Oleh')
+                    ->badge()
+                    ->color('info')
+                    ->default('Admin'),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Update Terakhir')
+                    ->dateTime('d M Y H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
+            ->defaultSort('updated_at', 'desc')
             ->filters([
-                //
             ])
             ->actions([
-            Tables\Actions\EditAction::make(),
-            Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -95,24 +115,9 @@ class ContentWebResource extends Resource
             ]);
     }
 
-    // Tambahkan di luar fungsi form, table, atau getPages
-    protected static function mutateFormDataBeforeCreate(array $data): array
+    public static function getEloquentQuery(): Builder
     {
-        $data['id_users'] = Auth::id();
-        return $data;
-    }
-
-    protected static function mutateFormDataBeforeSave(array $data): array
-    {
-        $data['id_users'] = Auth::id();
-        return $data;
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+        return parent::getEloquentQuery()->with(['user', 'images']);
     }
 
     public static function getPages(): array

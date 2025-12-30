@@ -7,13 +7,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    {{-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"> --}}
-    {{-- <link rel="icon" href="https://img.icons8.com/emoji/48/mountain.png" /> --}}
     <style>
       html {
         scroll-behavior: smooth;
       }
-      /* Scrollbar  untuk komentar */
       #commentList::-webkit-scrollbar {
         width: 8px;
       }
@@ -28,20 +25,17 @@
     <!-- Navbar -->
     <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out bg-transparent">
         <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-3">
-        
-        <!-- Logo -->
         <h1 class="text-xl font-bold text-primary">Bukit Trunyan</h1>
 
         <!-- Menu Desktop -->
         <ul id="navLinks" class="hidden md:flex space-x-6 text-white font-medium transition-colors duration-500">
-        <li><a href="#home" class="hover:text-primary transition">Home</a></li>
-        <li><a href="#sejarah" class="hover:text-primary transition">Sejarah</a></li>
-        <li><a href="#informasi" class="hover:text-primary transition">Informasi</a></li>
-        <li><a href="#galeri" class="hover:text-primary transition">Galeri</a></li>
-        <li><a href="#komentar" class="hover:text-primary transition">Komentar</a></li>
+            <li><a href="#home" class="hover:text-primary transition">Home</a></li>
+            <li><a href="#sejarah" class="hover:text-primary transition">Sejarah</a></li>
+            <li><a href="#informasi" class="hover:text-primary transition">Informasi</a></li>
+            <li><a href="#galeri" class="hover:text-primary transition">Galeri</a></li>
+            <li><a href="#komentar" class="hover:text-primary transition">Komentar</a></li>
         </ul>
 
-        <!-- Login / Register / Dashboard -->
         @if (Route::has('login'))
         <div id="navButtons" class="hidden md:flex space-x-3 transition-colors duration-500">
             
@@ -61,12 +55,6 @@
                         x-transition
                         class="absolute right-0 mt-2 w-48 bg-gray-100 rounded-md shadow-lg py-1 z-50 text-black"
                         style="display: none;">
-                
-                        {{-- <!-- Link Profil -->
-                        <a href="{{ route('profil') }}" 
-                          class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50">
-                            Profil
-                        </a> --}}
 
                         @if (Auth::user()->role === 'admin')
                             <a href="/admin" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50">
@@ -78,7 +66,6 @@
                             </a>
                         @endif
                 
-                        <!-- Logout  -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type."submit" 
@@ -88,9 +75,7 @@
                         </form>
                     </div>
                 </div>
-
-            @else
-                
+                @else        
                 <a href="{{ route('login') }}"
                   class="px-4 py-2 border border-white text-white rounded-lg hover:bg-green-500 hover:border-green-200 transition">
                     Log in
@@ -102,19 +87,16 @@
                     </a>
                 @endif
             @endauth
-
         </div>
         @endif
 
-        <!-- Mobile Button -->
+        <!-- Tombol Mobile -->
         <button id="menu-btn" class="md:hidden focus:outline-none">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
         </button>
     </div>
-
-    <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden md:hidden bg-white shadow-inner">
         <ul class="flex flex-col text-center space-y-2 py-3 font-medium">
         <li><a href="#home" class="block py-2 hover:bg-green-100">Home</a></li>
@@ -123,7 +105,6 @@
         <li><a href="#galeri" class="block py-2 hover:bg-green-100">Galeri</a></li>
         <li><a href="#komentar" class="block py-2 hover:bg-green-100">Komentar</a></li>
 
-        <!-- Login/Register di menu mobile -->
         @if (Route::has('login'))
             @auth
             <a href="{{ route('profil') }}" class="block py-2 hover:bg-green-100">Profil</a>
@@ -144,17 +125,14 @@
     </div>
     </nav>
 
-
-
     <!-- Hero -->
     <section
       id="home"
       class="h-screen bg-cover bg-center flex items-center justify-center relative"
-      style="background-image: url('{{ asset('img/11.jpg') }}');"
-    >
+      style="background-image: url('{{ asset('img/11.jpg') }}');">
       <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/40"></div>
       <div class="relative text-center text-white px-4">
-         @if ($heading_hero) 
+        @if ($heading_hero) 
             <h2 class="text-5xl font-extrabold mb-4">
               {!! $heading_hero->isi_content_web !!}
             </h2>
@@ -168,7 +146,6 @@
         <a href="#" class="bg-primary hover:bg-green-800 text-white px-8 py-3 rounded-lg font-semibold transition">Mulai Virtual Tour</a>
       </div>
     </section>
-
 
 
     <!-- Sejarah -->
@@ -218,7 +195,8 @@
       <div class="max-w-6xl mx-auto px-6">
         <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Informasi Wisata</h3>
         <div class="grid md:grid-cols-4 gap-8 text-center">
-          <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
+
+          <div class="p-6 bg-white rounded-xl shadow-xl hover:scale-105 transition">
             <h4 class="text-xl font-bold mb-2 text-gray-800">📍 Lokasi</h4>
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3931.643703793837!2d115.41210807460473!3d-8.271874882694598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd1e5ecb8b0c6e3%3A0xd3d2e896d11db8e3!2sDesa%20Trunyan%2C%20Kintamani%2C%20Bangli!5e0!3m2!1sid!2sid!4v1707725120211!5m2!1sid!2sid"
@@ -229,7 +207,8 @@
               loading="lazy"
             ></iframe>
           </div>
-          <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
+          
+          <div class="p-6 bg-white rounded-xl shadow-xl hover:scale-105 transition">
             <h4 class="text-xl font-bold mb-3 text-gray-800 text-center">
                 Rincian Biaya
             </h4>
@@ -240,102 +219,95 @@
                 @else
                   <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
                 @endif
-              </div>
-            <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition">
-      <h4 class="text-xl font-bold mb-3 text-gray-800 flex items-center justify-center">
-          Waktu Operasional
-      </h4>
-      @if($waktu_operasional)
-      <div class="space-y-2">
-          <p class="text-gray-700 leading-relaxed text-center">           
-              {!! $waktu_operasional->isi_content_web !!}
+            </div>
+
+            <div class="p-6 bg-white rounded-xl shadow-xl hover:scale-105 transition">
+                <h4 class="text-xl font-bold mb-3 text-gray-800 flex items-center justify-center">
+                    Waktu Operasional
+                </h4>
+                @if($waktu_operasional)
+                <div class="space-y-2">
+                    <p class="text-gray-700 leading-relaxed text-center">           
+                        {!! $waktu_operasional->isi_content_web !!}
+                    </p>
+                @else
+                    <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+                @endif
+                </div>
+                <p class="mt-4 text-xs text-gray-500 italic">
+                    Pendakian subuh sangat disarankan untuk melihat sunrise.
+                </p>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-xl hover:scale-105 transition flex flex-col justify-between">
+                <div>
+                  <h4 class="text-xl font-bold mb-3 text-gray-800 flex items-center justify-center">
+                    Cuaca Hari Ini
+                </h4>
+                @if(isset($data) && $data)
+                    <div class="flex flex-col items-center py-2">
+                        <div class="flex items-center space-x-2">
+                            <img src="http://openweathermap.org/img/wn/{{ $data['weather'][0]['icon'] }}@2x.png" 
+                                class="w-16 h-16" alt="weather-icon">
+                            <span class="text-4xl font-bold text-gray-800">{{ round($data['main']['temp']) }}°C</span>
+                        </div>
+                        
+                        <p class="text-lg font-medium text-green-600 capitalize">
+                            {{ $data['weather'][0]['description'] }}
+                        </p>
+
+                        <div class="grid grid-cols-2 gap-4 mt-4 w-full border-t border-gray-100 pt-4">
+                            <div class="text-center">
+                                <p class="text-xs text-gray-500">Kelembapan</p>
+                                <p class="font-semibold text-gray-700">{{ $data['main']['humidity'] }}%</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-gray-500">Tekanan Udara</p>
+                                <p class="font-semibold text-gray-700">{{ $data['wind']['speed'] }} m/s</p>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="py-10 text-center">
+                        <p class="text-gray-400 italic text-sm">Data cuaca tidak tersedia</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+        <div class="bg-gray-100 text-justify  mt-20 rounded-xl max-w-6xl mx-auto text-gray-700">
+          <!-- Deskripsi Singkat -->
+          @if($heading_informasi_1)
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">
+            {!! $heading_informasi_1->isi_content_web !!}
+          </h3>
+          @else
+              <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+          @endif
+          @if($informasi_1)
+            <p class="leading-relaxed mb-8 text-justify">
+              {!! $informasi_1->isi_content_web !!}
+            </p>
+          @else
+              <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+          @endif   
+          <br>
+
+          @if($heading_informasi_2)
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">
+            {!! $heading_informasi_2->isi_content_web !!}
+          </h3>
+          @else
+              <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
+          @endif
+
+          @if($tips)
+          <p class="text-2xl font-bold text-gray-900 mb-4">
+            {!! $tips->isi_content_web !!}
           </p>
           @else
               <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
           @endif
-      </div>
-      <p class="mt-4 text-xs text-gray-500 italic">
-          Pendakian subuh sangat disarankan untuk melihat sunrise.
-      </p>
-    </div>
-      <div class="p-6 bg-white rounded-xl shadow hover:scale-105 transition flex flex-col justify-between">
-        <div>
-          <h4 class="text-xl font-bold mb-3 text-gray-800 flex items-center justify-center">
-            Cuaca Hari Ini
-        </h4>
-        @if(isset($data) && $data)
-            <div class="flex flex-col items-center py-2">
-                <div class="flex items-center space-x-2">
-                    <img src="http://openweathermap.org/img/wn/{{ $data['weather'][0]['icon'] }}@2x.png" 
-                         class="w-16 h-16" alt="weather-icon">
-                    <span class="text-4xl font-bold text-gray-800">{{ round($data['main']['temp']) }}°C</span>
-                </div>
-                
-                <p class="text-lg font-medium text-green-600 capitalize">
-                    {{ $data['weather'][0]['description'] }}
-                </p>
-
-                <div class="grid grid-cols-2 gap-4 mt-4 w-full border-t border-gray-100 pt-4">
-                    <div class="text-center">
-                        <p class="text-xs text-gray-500">Kelembapan</p>
-                        <p class="font-semibold text-gray-700">{{ $data['main']['humidity'] }}%</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-xs text-gray-500">Tekanan Udara</p>
-                        <p class="font-semibold text-gray-700">{{ $data['wind']['speed'] }} m/s</p>
-                    </div>
-                </div>
-            </div>
-        @else
-            <div class="py-10 text-center">
-                <p class="text-gray-400 italic text-sm">Data cuaca tidak tersedia</p>
-            </div>
-        @endif
-    </div>
-</div>
-    </div>
-         {{-- <h3 class="text-2xl font-semibold text-left mb-10 mt-20 text-black">Informasi Track Pendakian</h3> --}}
-  
-      <div class="bg-gray-100 text-justify  mt-20 rounded-xl max-w-6xl mx-auto text-gray-700">
-        <!-- Deskripsi Singkat -->
-        @if($heading_informasi_1)
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">
-          {!! $heading_informasi_1->isi_content_web !!}
-        </h3>
-        @else
-            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
-        @endif
-
-        @if($informasi_1)
-          <p class="leading-relaxed mb-8 text-justify">
-            {!! $informasi_1->isi_content_web !!}
-          </p>
-          @else
-            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
-          @endif
-        
-        <br>
-
-        <!-- Tips Singkat -->
-        @if($heading_informasi_2)
-        <h3 class="text-2xl font-bold text-gray-900 mb-4">
-          {!! $heading_informasi_2->isi_content_web !!}
-        </h3>
-        @else
-            <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
-        @endif
-          <ul class="list-disc pl-6 space-y-2">
-              <li>Gunakan sepatu trekking atau sepatu dengan grip yang baik.</li>
-              <li>Bawa minimal 600ml air minum dan camilan ringan.</li>
-              <li>Hindari pendakian saat hujan karena jalur menjadi licin.</li>
-              <li>Hormati adat lokal dan jangan memasuki area sakral.</li>
-              <li>Buang sampah pada tempatnya dan jaga kebersihan jalur.</li>
-              <li>Sinyal seluler mungkin lemah di beberapa titik jalur.</li>
-              <li>Bawa senter atau headlamp jika mendaki subuh atau sore.</li>
-              <li>Gunakan pakaian yang nyaman dan siap untuk cuaca dingin.</li>
-          </ul>
-      </div>
-
+        </div>
       </div>
     </section>
 
@@ -346,13 +318,13 @@
       </h2>
       <br>
 
-      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-8 px-8">
+      <div class="grid grid-cols-2 px-2 sm:grid-cols-2 md:grid-cols-3 gap-8 px-10">
         @if (isset($galeri) && $galeri->images->count() > 0)
         @foreach ($galeri->images as $image)
         <div>
           <img 
           src="{{ asset('storage/' . $image->image_path) }}" alt="Galeri Bukit Trunyan"
-            class="w-full h-56 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
+            class="w-full h-65 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
         </div>
         @endforeach
         @else

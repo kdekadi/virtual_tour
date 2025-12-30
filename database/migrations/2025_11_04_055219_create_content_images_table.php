@@ -13,11 +13,8 @@ return new class extends Migration
     {
         Schema::create('content_image', function (Blueprint $table) {
             $table->id('id_content_image'); 
-
-            // Foreign Key ke tabel content_web
             $table->unsignedBigInteger('id_content_web');
             $table->foreign('id_content_web')->references('id_content_web')->on('content_web')->onDelete('cascade');
-
             $table->string('image_path', 255);
             $table->timestamps();
         });
