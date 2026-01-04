@@ -11,10 +11,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements FilamentUser, HasName
 {
-    // Fungsi yang wajib ada untuk Filament
     public function canAccessPanel(Panel $panel): bool
     {
-        // Hanya user dengan role 'admin' yang bisa akses panel
         return $this->role === 'admin';
     }
 
@@ -42,13 +40,11 @@ class User extends Authenticatable implements FilamentUser, HasName
         'remember_token',
     ];
 
-    // relasi ke tabel konten
     public function contentWebs()
     {
         return $this->hasMany(ContentWeb::class, 'id_users');
     }
 
-    // relasi ke tabel komentar
     public function komentars()
     {
         return $this->hasMany(Komentar::class, 'id_users');

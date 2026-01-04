@@ -13,7 +13,6 @@ class ContentImage extends Model
     'id_content_web', 'image_path',
 ];
      
-    // Gambar dimiliki oleh satu Konten
     public function contentWeb()
     {
         return $this->belongsTo(ContentWeb::class, 'id_content_web', 'id_content_web');
