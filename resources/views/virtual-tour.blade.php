@@ -18,7 +18,7 @@ body {
     height: 100vh;
 }
 
-/* ===== IFRAME (HARUS AKTIF) ===== */
+/* ===== IFRAME  ===== */
 .vt-iframe {
     width: 100%;
     height: 100%;
@@ -131,12 +131,34 @@ body {
     font-weight: bold;
     cursor: pointer;
 }
+/* ===== BACK BUTTON ===== */
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    background: rgba(0,0,0,.6);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.back-btn:hover {
+    background: rgba(0,0,0,.85);
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- ===== INFO + GUIDE (MUNCUL DI AWAL) ===== -->
+<!-- ===== INFO + GUIDE  ===== -->
 <div id="guideOverlay" class="guide-overlay">
     <div class="guide-box">
         <div class="guide-header">
@@ -166,6 +188,12 @@ body {
 </div>
 
 <div class="vt-container" id="vtContainer">
+
+    <!-- BACK TO LANDING -->
+<button class="back-btn" onclick="goBack()">
+    ⬅ Kembali
+</button>
+
 
     <!-- GUIDE KECIL -->
     <div id="vtGuide" class="vt-guide">
@@ -242,6 +270,13 @@ function closeGuide() {
     document.getElementById('guideOverlay').style.display = 'none';
     document.getElementById('vtGuide').style.display = 'none';
 }
+
+function goBack() {
+   window.history.back();
+
+}
+
+
 </script>
 
 </body>
