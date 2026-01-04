@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('komentar', function (Blueprint $table) {
             $table->id('id_komentar'); // Sesuai ERD
-            $table->string('isi_komentar', 255);
+            $table->text('isi_komentar', 255);
             $table->dateTime('waktu_komentar');
             $table->unsignedBigInteger('id_users');
             $table->foreign('id_users')->references('id_users')->on('users');

@@ -91,9 +91,8 @@ class UserResource extends Resource
                     ]),
 
                 TextInput::make('password_confirmation')
-                    ->label('Konfirmasi Password Baru')
+                    ->label('Konfirmasi Password')
                     ->password()
-                    // Muncul jika di halaman create ATAU jika password baru sedang diisi
                     ->visible(fn (Forms\Get $get, string $context) => $context === 'create' || filled($get('password')))
                     ->required(fn (Forms\Get $get, string $context) => $context === 'create' || filled($get('password')))
                     ->dehydrated(false)
