@@ -163,7 +163,17 @@
         </p>
         @endif
         <br>
-        <a href="#" class="bg-primary hover:bg-green-800 text-white px-8 py-3 rounded-lg font-semibold transition">Mulai Virtual Tour</a>
+        <!-- <a href="20251206_155455_491.jpg" -->
+         <!-- class="bg-primary hover:bg-green-800 text-white px-8 py-3 rounded-lg font-semibold transition"> -->
+         <!-- Mulai Virtual Tour</a> -->
+
+         <a href="{{ route('virtual.tour') }}"
+         class="bg-green-700 hover:bg-green-800 text-white px-8 py-3 rounded-lg font-semibold transition">
+         Mulai Virtual Tour
+         </a>
+
+
+
       </div>
     </section>
 

@@ -38,6 +38,17 @@ Route::get('/profil', function () {
 
 Route::get('/sejarah', [PageController::class, 'showSejarah'])->name('sejarah.lengkap');
 
+// Route::get('/virtual_tour', function () {
+//     return view('virtualtour');
+// })->name('virtual.tour');
+
+Route::get('/virtual-tour', function () {
+    return view('virtual-tour');
+})->name('virtual.tour');
+
+
+
+
 
 
 

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!--projecttitle--><title>vr bukit trunyan</title><!--projecttitle-end-->
+		<!--projectdescription--><meta name="description" content="New 3Sixty Virtual Tour Project"><!--projectdescription-end-->
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width, shrink-to-fit=no">
+		
+		<link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		
+		<!-- Insert this line above script imports  -->
+		<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+		
+		<script src="js/jquery.js"></script>
+		<script src="js/imagedata.js"></script>
+		
+		<!-- Insert this line after script imports -->
+		<script>if (window.module) module = window.module;</script>
+		
+		<style>
+		
+			
+						
+			/* SCROLLBAR STYLING */
+			/* width */
+			::-webkit-scrollbar {
+				width: 0.25em;
+				height: 0.25em;
+			}
+			/* Track */
+			::-webkit-scrollbar-track {
+				background: #2c3643; 
+			}
+			/* Handle */
+			::-webkit-scrollbar-thumb {
+				background: #0d9e59; 
+				transition: background .5s;
+			}
+			/* Handle on hover */
+			::-webkit-scrollbar-thumb:hover {
+				background: #00e075; 
+			}
+
+
+			body {
+				margin: 0;
+				overflow: hidden;
+			}
+			#container {
+				width: 100vw;
+				height: 100vh;
+				display: block;
+			}
+			#overlay {
+				position: absolute;
+				top: 0; left: 0;
+				width: 100vw;
+				height: 100vh;
+				background-color: rgba(0, 0, 0, 0.8);
+				color: white;
+				font-size: 2rem;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				z-index: 10;
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity 0.5s ease;
+			}
+			
+			#tmp{
+				position: fixed;
+				top: 0;
+				left: 0; 
+				right: 0;
+				bottom: 0;
+				padding: 3em;
+				background-color: rgba(0,0,0,.5);
+				backdrop-filter: blur(5px);
+				display: none;
+				z-index: 21;
+			}
+		</style>
+	</head>
+	<body id="body">
+	    <div id="container"></div>
+		<div id="overlay">Loading...</div>
+    	
+		
+		
+		<!--customhtml--><!--customhtml-end-->
+		
+		<div id="tmp">
+			<div style="width: 100%; height: 100%; overflow: hidden; overflow-y: auto; box-sizing: border-box; position: relative;" id="tmpcontent"></div>
+			<div class="mediaclosebutton" onclick="hideTemp()"><i class="fa fa-times-circle"></i></div>
+		</div>
+
+
+		<div id="loading" class="fullwrapper" style="display: table; width: 100%; height: 100%;">
+    		<div style="display: table-cell; vertical-align: middle; text-align: center; color: white; font-size: 30px; padding: 50px;">
+    			<!--loadingtext-->Loading...<!--loadingtext-end-->
+				<div id="loadingperc" style="font-size:12px;"></div>
+    		</div>
+    	</div>
+		
+		<!-- Three.js Core -->
+		<script src="js/three.min.js"></script>
+		<!-- OrbitControls -->
+		<script src="js/OrbitControls.js"></script>
+		
+    	<script>
+			
+			let scene, camera, renderer, controls;
+			let spriteHotspots = [];
+			
+			let panoramaMesh;
+
+			let targetFov = 75;
+			let initialFov = 75;
+			let initialPinchDistance = null;
+
+			const overlay = document.getElementById('overlay');
+			const raycaster = new THREE.Raycaster();
+			const mouse = new THREE.Vector2();
+
+			init();
+			animate();
+			
+			/*initfunction*/
+
+		let currentPanorama = 'trunyan(1).jpg';
+		function init() {
+			const container = document.getElementById('container');
+
+			scene = new THREE.Scene();
+
+			camera = new THREE.PerspectiveCamera(targetFov, container.clientWidth / container.clientHeight, 0.1, 1000);
+			camera.position.set(0, 0, 0.1);
+
+			renderer = new THREE.WebGLRenderer({ antialias: true });
+			renderer.setSize(container.clientWidth, container.clientHeight);
+			container.appendChild(renderer.domElement);
+
+			controls = new THREE.OrbitControls(camera, renderer.domElement);
+			controls.enableZoom = true;
+			controls.minDistance = 0.1;
+			controls.maxDistance = 5;
+			controls.enablePan = false;
+			controls.rotateSpeed = -0.3;
+			controls.enableDamping = true;
+			controls.dampingFactor = 0.1;
+
+			const geometry = new THREE.SphereGeometry(500, 60, 40);
+			geometry.scale(-1, 1, 1);
+
+			const texture = new THREE.TextureLoader().load('panoramas/trunyan(1).jpg');
+			const material = new THREE.MeshBasicMaterial({ map: texture });
+
+			panoramaMesh = new THREE.Mesh(geometry, material);
+			scene.add(panoramaMesh);
+
+			loadHotspotsFor('trunyan(1).jpg');
+
+			window.addEventListener('resize', onWindowResize);
+			renderer.domElement.addEventListener('wheel', onMouseWheel, { passive: false });
+			renderer.domElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+			renderer.domElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+			renderer.domElement.addEventListener('pointermove', onPointerMove, false);
+		}
+		
+/*initfunction-end*/
+
+			function onMouseWheel(e) {
+				e.preventDefault();
+				targetFov += e.deltaY * 0.05;
+				targetFov = THREE.MathUtils.clamp(targetFov, 30, 100);
+			}
+
+			function handleTouchStart(e) {
+				if (e.touches.length === 2) {
+					const dx = e.touches[0].pageX - e.touches[1].pageX;
+					const dy = e.touches[0].pageY - e.touches[1].pageY;
+					initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
+					initialFov = targetFov;
+				}
+			}
+
+			function handleTouchMove(e) {
+				if (e.touches.length === 2 && initialPinchDistance !== null) {
+					e.preventDefault();
+					const dx = e.touches[0].pageX - e.touches[1].pageX;
+					const dy = e.touches[0].pageY - e.touches[1].pageY;
+					const newDistance = Math.sqrt(dx * dx + dy * dy);
+					const zoomFactor = initialPinchDistance / newDistance;
+					targetFov = THREE.MathUtils.clamp(initialFov * zoomFactor, 30, 100);
+				}
+			}
+
+			function loadHotspotsFor(panorama) {
+				clearHotspots();
+				/*panoramas*/
+
+			if (panorama === 'trunyan(1).jpg') {
+				addHotspot('images/chevronup.png', new THREE.Vector3(-381.19880337033544, -116.49226647611187, -19.89310633688482), () => {
+		switchPanorama('trunyan(2).jpg');
+	});
+	addHotspot('images/arrowup.png', new THREE.Vector3(104.68852097421146, 100.71053959874035, -371.73657962600623), () => {
+		switchPanorama('trunyan(64).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(2).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(341.1872735816954, -180.16334417676765, 104.03979966224762), () => {
+		switchPanorama('trunyan(1).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-335.03284104219955, -209.14409089908452, 60.61831856541823), () => {
+		switchPanorama('trunyan(3).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(3).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-260.3608028056162, -140.07318308492097, -268.0399330758114), () => {
+		switchPanorama('trunyan(2).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-180.05358580351182, -130.5776367491503, 331.57249696533177), () => {
+		switchPanorama('trunyan(4).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(4).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(3.98590622998083, -190.32021738144434, -351.1841126141924), () => {
+		switchPanorama('trunyan(3).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-0.6946187014421883, -141.91132444795912, 373.54712358516423), () => {
+		switchPanorama('trunyan(5).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(5).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-340.4764692920319, -208.69865387578085, -12.244780825984414), () => {
+		switchPanorama('trunyan(4).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(360.3495127542029, -98.89434927588567, -140.26234576609727), () => {
+		switchPanorama('trunyan(6).jpg');
+	});
+	addHotspot('images/aboutus.png', new THREE.Vector3(-383.56675171852356, -88.96876582180704, 65.73463600964892), () => {
+		showMedia(1, 'images/PutihModernPerjalananGunungBromoInstagramPost.jpg');
+	});
+}
+
+			if (panorama === 'trunyan(6).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(276.9459786227443, -284.3074421951484, -46.08218682691059), () => {
+		switchPanorama('trunyan(6).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-353.7989205487688, -184.64790424278323, -14.16467952153818), () => {
+		switchPanorama('trunyan(7).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(7).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(135.03108372688715, -284.899928181384, 245.5941983865689), () => {
+		switchPanorama('trunyan(6).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-15.928381098013027, -62.72209912407081, -394.080114366068), () => {
+		switchPanorama('trunyan(8).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(8).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(286.81592012111474, -278.1771519695966, 4.298529186262526), () => {
+		switchPanorama('trunyan(7).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-344.18061893619, -52.67078606119721, 195.90756112003288), () => {
+		switchPanorama('trunyan(9).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(9).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-308.7591787186482, -248.41169569794238, 48.1530620253812), () => {
+		switchPanorama('trunyan(8).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(367.78744007960336, -128.0026219706358, 88.4221657300258), () => {
+		switchPanorama('trunyan(10).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(10).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(360.01097526181604, -147.1451647181532, -90.099914411897), () => {
+		switchPanorama('trunyan(9).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-289.6329860647106, -274.36090441865247, 16.313625697131517), () => {
+		switchPanorama('trunyan(11).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(11).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-320.6517302012049, -238.292858374098, 6.393321713800136), () => {
+		switchPanorama('trunyan(10).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(392.5129988247952, -70.3242298663492, 15.890273762086839), () => {
+		switchPanorama('trunyan(12).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(12).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(355.53868214711053, -151.52547984560235, 100.68787702993117), () => {
+		switchPanorama('trunyan(11).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-367.6419753428361, -132.58428843284733, -82.52456406948232), () => {
+		switchPanorama('trunyan(13).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(13).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(275.13341087700286, -280.6696578222469, 71.76771864902426), () => {
+		switchPanorama('trunyan(12).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-377.8240464202122, -91.29506322617206, 91.77642820011575), () => {
+		switchPanorama('trunyan(14).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(14).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-260.03647139080203, -267.26626642338124, 143.1368443422318), () => {
+		switchPanorama('trunyan(13).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-71.02158708730553, -145.32501257230837, 365.1519823907115), () => {
+		switchPanorama('trunyan(15).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(15).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(216.70138063920842, -288.59703285069435, 171.05556687209494), () => {
+		switchPanorama('trunyan(14).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-393.61462804338214, -67.60812668912877, 6.555368999912367), () => {
+		switchPanorama('trunyan(16).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(16).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-151.69859099502253, -323.44255186474334, 179.45864341359396), () => {
+		switchPanorama('trunyan(15).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-377.7580631905282, -92.91781827151175, 90.85735505052256), () => {
+		switchPanorama('trunyan(17).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(17).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(35.71131903128523, -334.08241619903623, 216.0030916559185), () => {
+		switchPanorama('trunyan(16).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-372.7412559353071, -142.87380161229873, 7.946712952120273), () => {
+		switchPanorama('trunyan(18).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(18).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(325.79864392832667, -199.728209423285, -115.65131379249198), () => {
+		switchPanorama('trunyan(17).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-326.38595365556023, -229.74638585025696, 12.321635539353416), () => {
+		switchPanorama('trunyan(19).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(19).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(286.19955850001486, -278.030450539916, 17.74583204365334), () => {
+		switchPanorama('trunyan(18).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-377.65215774747327, -129.78367031417395, -6.900466251020458), () => {
+		switchPanorama('trunyan(20).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(20).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-265.9444506078661, -278.5811056834076, 105.91323759009454), () => {
+		switchPanorama('trunyan(19).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(326.65906326758164, -100.86869053479668, 205.93749455470322), () => {
+		switchPanorama('trunyan(21).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(21).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-45.61801073447479, -309.42174737361637, -248.51596425961372), () => {
+		switchPanorama('trunyan(20).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-382.2774941694788, -44.900887584608874, -104.94003450815252), () => {
+		switchPanorama('trunyan(22).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(22).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-244.47219052726837, -315.23852648981205, 20.65916779453839), () => {
+		switchPanorama('trunyan(21).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(5.282674510473112, -112.72402208391811, 383.081296860343), () => {
+		switchPanorama('trunyan(23).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(23).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-251.74867917274645, -257.0023126285127, 173.85249841957582), () => {
+		switchPanorama('trunyan(22).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-391.0160975353165, -70.88636255102604, -42.21887007716968), () => {
+		switchPanorama('trunyan(24).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(24).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-291.034629929666, -247.3086551760115, -116.25033075731788), () => {
+		switchPanorama('trunyan(23).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(396.71481477092834, -27.30320343813804, -41.50266834933145), () => {
+		switchPanorama('trunyan(25).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(25).jpg') {
+				addHotspot('images/chevronup.png', new THREE.Vector3(364.7831080911651, -160.88250042102658, 18.590784264559954), () => {
+		switchPanorama('trunyan(26).jpg');
+	});
+	addHotspot('images/aboutus.png', new THREE.Vector3(395.97518485177477, 3.9294251741555204, 51.55431527843146), () => {
+		showMedia(1, 'images/trunyan(67).jpg');
+	});
+	addHotspot('images/chevronforward.png', new THREE.Vector3(-299.9590805578079, -181.76622745849426, -191.1876287603422), () => {
+		switchPanorama('trunyan(24).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(26).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(301.3282868275709, -262.385698016231, -6.032780360952805), () => {
+		switchPanorama('trunyan(25).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-360.0634810423689, -164.18910546167464, -51.782181023067196), () => {
+		switchPanorama('trunyan(27).jpg');
+	});
+	addHotspot('images/aboutus.png', new THREE.Vector3(382.51085162675304, -85.40447631231643, -77.29030557579567), () => {
+		showMedia(1, 'images/PutihModernPerjalananGunungBromoInstagramPost(1).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(27).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-70.25487457920475, -354.7615044220135, -170.3031544649103), () => {
+		switchPanorama('trunyan(26).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(311.6872958656013, -73.57230199177663, 238.27929860600545), () => {
+		switchPanorama('trunyan(28).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(28).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-267.4079651067358, -283.39906778450813, -89.74493526687493), () => {
+		switchPanorama('trunyan(27).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(58.37817181616457, -133.69918960012745, 371.4197573240356), () => {
+		switchPanorama('trunyan(29).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(29).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-281.026757251405, -283.6080538814565, -16.650616126531474), () => {
+		switchPanorama('trunyan(28).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(361.1691979400905, -159.97954692480482, 57.23828864155147), () => {
+		switchPanorama('trunyan(30).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(30).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(31.675760259032376, -170.87039174554658, -359.54106299799724), () => {
+		switchPanorama('trunyan(29).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-84.19376705611168, -178.86236398685386, 347.08389921806827), () => {
+		switchPanorama('trunyan(32).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(32).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-292.24357037437267, -272.07409092179506, -7.1955714228577445), () => {
+		switchPanorama('trunyan(30).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(326.85016208971643, -5.921565727375738, -229.47492440961986), () => {
+		switchPanorama('trunyan(33).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(33).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-260.26586414707714, -302.93554928557893, 13.949244362574907), () => {
+		switchPanorama('trunyan(32).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(392.3947301277554, -51.92405390813499, 51.51370774634839), () => {
+		switchPanorama('trunyan(34).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(34).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-331.3451496650832, -220.37210319626067, 35.98067208833341), () => {
+		switchPanorama('trunyan(33).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(380.41706403758826, -116.79884561136872, -34.50993937486836), () => {
+		switchPanorama('trunyan(35).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(35).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-276.31137390751854, -263.4947457838907, -117.88418402208252), () => {
+		switchPanorama('trunyan(34).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(372.42488992312536, -72.37091345597966, -124.97225222940307), () => {
+		switchPanorama('trunyan(36).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(36).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(259.6987558875833, -287.6654430531956, -96.60920893472687), () => {
+		switchPanorama('trunyan(35).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-384.72766746324135, -100.92890777726774, 38.22281121541123), () => {
+		switchPanorama('trunyan(37).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(37).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(157.03390292463118, -272.48987961797286, 245.965650951015), () => {
+		switchPanorama('trunyan(36).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-383.7195618830814, -105.5895837038718, 30.747866653187458), () => {
+		switchPanorama('trunyan(38).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(38).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(44.29681017847026, -278.20380871817747, -283.1312274568453), () => {
+		switchPanorama('trunyan(37).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-361.8991451283659, -103.60186626211542, 132.4915310846521), () => {
+		switchPanorama('trunyan(39).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(39).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(338.1987468047732, -212.79510255732856, -4.281594360994125), () => {
+		switchPanorama('trunyan(38).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-375.85160952777716, -86.29719656177176, -102.73358945676674), () => {
+		switchPanorama('trunyan(40).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(40).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-271.86051448549154, -292.15519754648767, 13.401449333674565), () => {
+		switchPanorama('trunyan(39).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(343.2292816673635, -143.80239304904106, 144.76863567004523), () => {
+		switchPanorama('trunyan(41).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(41).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(194.03923723155583, -332.6151375613272, 106.27703217336631), () => {
+		switchPanorama('trunyan(40).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-397.55200177573676, 21.21733400882296, -27.140387877243906), () => {
+		switchPanorama('trunyan(42).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(42).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-252.93209147783915, -304.3440744843504, 57.30938801345766), () => {
+		switchPanorama('trunyan(41).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(350.58786212594725, -130.12251485632135, 139.57356622815325), () => {
+		switchPanorama('trunyan(43).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(43).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(279.98040556863936, -276.2177896896896, -69.39396180184849), () => {
+		switchPanorama('trunyan(42).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-391.31508153672223, -75.05823461949099, 20.3430620992106), () => {
+		switchPanorama('trunyan(44).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(44).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-307.5708326557394, -249.21628845431087, -51.63932820078187), () => {
+		switchPanorama('trunyan(43).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(217.12064898539208, -158.75545804001746, -295.5850081614878), () => {
+		switchPanorama('trunyan(45).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(45).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-236.26471679087888, -268.71038760812024, -177.54982498551522), () => {
+		switchPanorama('trunyan(44).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(368.52730340155495, -119.09597618145202, -96.71998583888455), () => {
+		switchPanorama('trunyan(46).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(46).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-280.33683925144544, -269.861778718425, -90.98613790935346), () => {
+		switchPanorama('trunyan(45).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(385.51650221426735, -99.74841956127409, 28.001108988353497), () => {
+		switchPanorama('trunyan(47).jpg');
+	});
+	addHotspot('images/default.png', new THREE.Vector3(140.8168056151687, 38.770116551278655, -371.35653343521534), () => {
+	});
+}
+
+			if (panorama === 'trunyan(47).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-265.1880740458629, -290.1639031912266, 70.3036177927357), () => {
+		switchPanorama('trunyan(46).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(361.74155592350536, -138.32405347670186, 96.02595760041527), () => {
+		switchPanorama('trunyan(48).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(48).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-131.49163408171677, -206.14598275838335, -315.93117141011163), () => {
+		switchPanorama('trunyan(47).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(98.59679912817195, -137.31249326202402, 361.4393547493329), () => {
+		switchPanorama('trunyan(49).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(49).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(330.364393613869, -214.61213305656045, -66.75566560819337), () => {
+		switchPanorama('trunyan(48).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-359.421094019053, -147.92840807715535, 91.19120219823195), () => {
+		switchPanorama('trunyan(50).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(50).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-280.0032808218609, -274.17062070919485, 76.51053286026786), () => {
+		switchPanorama('trunyan(49).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(382.3584887940673, -94.77956139270077, -65.3810289420783), () => {
+		switchPanorama('trunyan(51).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(51).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-242.63947743122884, -297.73542240624454, -110.25279309451504), () => {
+		switchPanorama('trunyan(50).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(387.2357854851344, -95.54135560944766, -18.083875208013076), () => {
+		switchPanorama('trunyan(52).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(52).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-170.92509847073865, -256.5670852236293, 254.0278839158101), () => {
+		switchPanorama('trunyan(51).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(80.48325303598449, -40.708583581067586, -389.2275947829562), () => {
+		switchPanorama('trunyan(54).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(54).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-233.46921021740079, -314.8772086741132, 77.42510470315226), () => {
+		switchPanorama('trunyan(52).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(398.7494412536173, -6.619271530634759, -15.476366789451701), () => {
+		switchPanorama('trunyan(55).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(55).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-255.89536786557682, -304.3995248597266, 40.131183681249325), () => {
+		switchPanorama('trunyan(54).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(388.15296843988926, 2.88555676281435, -93.80782830196131), () => {
+		switchPanorama('trunyan(56).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(56).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-274.3173297742904, -289.1236085060083, -29.568422702424257), () => {
+		switchPanorama('trunyan(55).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(299.4855803431657, -56.99799643204196, -257.91888735179), () => {
+		switchPanorama('trunyan(57).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(57).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(200.19872228638997, -276.34058096662545, -207.50104082941309), () => {
+		switchPanorama('trunyan(56).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-357.41128830436634, -54.626617657842026, 169.30833138517806), () => {
+		switchPanorama('trunyan(58).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(58).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(242.2079315250804, -314.0411752356972, -48.07743985933598), () => {
+		switchPanorama('trunyan(57).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-337.0788568966385, -39.715699178095804, 209.9699891134607), () => {
+		switchPanorama('trunyan(59).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(59).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-202.3652436957743, -331.20175419107096, 94.60703085274201), () => {
+		switchPanorama('trunyan(58).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(389.2064229731769, -43.475207678850595, -78.32234562095277), () => {
+		switchPanorama('trunyan(60).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(60).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(180.37473828115003, -289.09210713959385, -208.50210545822077), () => {
+		switchPanorama('trunyan(59).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-393.3938623550231, 39.13747623055582, 54.8220904643008), () => {
+		switchPanorama('trunyan(61).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(61).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(187.1774368529938, -353.2148203601797, 0.1268860956779848), () => {
+		switchPanorama('trunyan(60).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-393.6018288922751, 58.08466932868034, 36.451729190037256), () => {
+		switchPanorama('trunyan(62).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(62).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(201.81462070886906, -300.30919939954424, -169.3928534499956), () => {
+		switchPanorama('trunyan(61).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-354.7937879684097, -71.19268909992032, 168.58798842529984), () => {
+		switchPanorama('trunyan(63).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(63).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(106.09213896960057, -259.1075880399353, -285.0825550912401), () => {
+		switchPanorama('trunyan(62).jpg');
+	});
+	addHotspot('images/chevronup.png', new THREE.Vector3(-371.5585550892812, -121.40558991455441, 83.27464184905222), () => {
+		switchPanorama('trunyan(64).jpg');
+	});
+}
+
+			if (panorama === 'trunyan(64).jpg') {
+				addHotspot('images/chevronforward.png', new THREE.Vector3(-318.8128147295527, -196.4085620927487, -139.170853471641), () => {
+		switchPanorama('trunyan(63).jpg');
+	});
+	addHotspot('images/arrowdown.png', new THREE.Vector3(-373.08687217699935, -138.08846317429607, -35.658830804525905), () => {
+		switchPanorama('trunyan(1).jpg');
+	});
+}
+
+/*panoramas-end*/
+				
+			}
+
+			function switchPanorama(panoramaName) {
+				overlay.style.pointerEvents = 'auto';
+				overlay.style.opacity = '1';
+				overlay.textContent = 'Loading...';
+
+				const newTexture = new THREE.TextureLoader().load(`panoramas/${panoramaName}`, (tex) => {
+					panoramaMesh.material.map = tex;
+					panoramaMesh.material.needsUpdate = true;
+					currentPanorama = panoramaName;
+					loadHotspotsFor(currentPanorama);
+					overlay.style.opacity = '0';
+					overlay.style.pointerEvents = 'none';
+				}, (xhr) => {
+					const progress = (xhr.loaded / xhr.total) * 100;
+					overlay.textContent = `Loading... ${progress.toFixed(0)}%`;
+				});
+			}
+
+			function addHotspot(imageUrl, position, onClickCallback) {
+				const textureLoader = new THREE.TextureLoader();
+				textureLoader.load(imageUrl, (texture) => {
+					const material = new THREE.SpriteMaterial({ map: texture });
+					const sprite = new THREE.Sprite(material);
+					sprite.position.copy(position);
+					sprite.scale.set(40, 40, 1);
+					sprite.userData = {
+						onClick: onClickCallback,
+						targetScale: 40
+					};
+					spriteHotspots.push(sprite);
+					scene.add(sprite);
+				});
+			}
+
+			function clearHotspots() {
+				spriteHotspots.forEach(sprite => scene.remove(sprite));
+				spriteHotspots = [];
+			}
+
+			function onPointerMove(event) {
+				mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+				mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+				raycaster.setFromCamera(mouse, camera);
+				const intersects = raycaster.intersectObjects(spriteHotspots);
+
+				spriteHotspots.forEach(sprite => {
+					sprite.userData.targetScale = 40;
+				});
+
+				if (intersects.length > 0) {
+					intersects[0].object.userData.targetScale = 50;
+				}
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			}
+
+			function animate() {
+				requestAnimationFrame(animate);
+
+				// Smooth transition FOV
+				camera.fov += (targetFov - camera.fov) * 0.1;
+				camera.updateProjectionMatrix();
+
+				// Smooth hotspot scale animation
+				spriteHotspots.forEach(sprite => {
+					const currentScale = sprite.scale.x;
+					const target = sprite.userData.targetScale || 40;
+					const newScale = THREE.MathUtils.lerp(currentScale, target, 0.1);
+					sprite.scale.set(newScale, newScale, 1);
+				});
+
+				controls.update();
+				renderer.render(scene, camera);
+			}
+
+			// Klik pada hotspot
+			document.addEventListener('click', function (event) {
+				const mouseClick = new THREE.Vector2(
+					(event.clientX / window.innerWidth) * 2 - 1,
+					-(event.clientY / window.innerHeight) * 2 + 1
+				);
+
+				const clickRaycaster = new THREE.Raycaster();
+				clickRaycaster.setFromCamera(mouseClick, camera);
+				const intersects = clickRaycaster.intersectObjects(spriteHotspots);
+
+				if (intersects.length > 0) {
+					const clicked = intersects[0].object;
+					if (clicked.userData.onClick) clicked.userData.onClick();
+				}
+			});
+			
+			
+			
+            
+			
+			
+			function hideTemp(){
+				$("#tmp").fadeOut();
+				setTimeout(function(){
+					$("#tmpcontent").html("");
+				},1000);
+			}
+			
+			function showMedia(type, content){
+				switch(type){
+					case 1 :
+						//Image
+						$("#tmpcontent").html("<img src='"+content+"' style='width: 100%;'>");
+						$("#tmp").fadeIn();
+						break;
+					case 2 :
+						//Video
+						$("#tmpcontent").html("<video id='webvideo' controls autoplay style='width: 100%; height: 100%;'><source src='" +content+ "' type='video/mp4'> Your browser does not support the video tag. </video>");
+						$("#tmp").fadeIn();
+						break;
+					case 3 :
+						//Audio
+						$("#tmpcontent").html("<audio controls style='width: 100%;'><source src='"+content+"' type='audio/ogg'>Your browser does not support the audio tag.</audio>");
+						$("#tmp").fadeIn();
+						break;
+					case 4 :
+						//PDF
+						$("#tmpcontent").html("<iframe src='pdfjs/web/viewer.html?file=../../"+content+"' style='width: 100%; height: 99%;'></iframe>");
+						$("#tmp").fadeIn();
+						break;
+				}
+			}
+			
+			
+			/*customjs*/
+
+/*customjs-end*/
+        </script>
+	</body>
+</html>
