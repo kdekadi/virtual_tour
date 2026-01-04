@@ -19,12 +19,33 @@ class AuthController extends Controller
     {
         $request->validate([
             'username' => ['required', 'string', 'max:45'],
-            'email' => ['required', 'string', 'email', 'max:100', 'unique:users,email'], // Cek unik di tabel users
-            'nomor_telp' => ['nullable', 'string', 'max:45'],
+            'email' => ['required', 'string', 'email', 'max:100', 'unique:users,email'], 
+            'nomor_telp' => ['required', 'string', 'max:45'],
             'password' => ['required', 'string', 'min:8', 'confirmed'], 
-        ]);
+        ],
+        [
+       
+            'username.required' => 'Username wajib diisi.',
+            'username.max' => 'Username maksimal 45 karakter.',
 
-        // Buat user baru
+       
+            'nomor_telp.required' => 'Nomor telepon wajib diisi.',
+            'nomor_telp.max' => 'Nomor telepon maksimal 45 karakter.',
+
+           
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'email.max' => 'Email maksimal 100 karakter.',
+
+      
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ]
+    );
+
+        // buat user baru
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,

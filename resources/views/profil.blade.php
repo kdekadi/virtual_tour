@@ -104,7 +104,7 @@
 
     <!-- Header -->
     <div class="header">
-        <a href="{{ url('/') }}" class="btn-back">← kembali</a>
+        <a href="{{ url('/') }}" class="btn-back">← Kembali</a>
     </div>
 
     <!-- Content -->

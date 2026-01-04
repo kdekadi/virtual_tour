@@ -23,6 +23,7 @@
             margin-top: 60px;
         }
 
+
         .profile-card {
             background-color: #ffffff;
             width: 420px;
@@ -64,12 +65,20 @@
         .btn-save:hover {
             background-color: #166016;
         }
+        .btn-back {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <a href="{{ route('profil') }}">← Kembali</a>
+    <a href="{{ route('profil') }}" class="btn-back">← Kembali</a>
 </div>
 
 <div class="container">

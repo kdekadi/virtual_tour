@@ -80,6 +80,10 @@ class PageController extends Controller
     $heading_hero = ContentWeb::where('nama_content_web', 'heading_hero') 
         ->first();
 
+    $bg_home = ContentWeb::with('images')
+        ->where('nama_content_web', 'bg_home') 
+        ->first();
+
     $deskripsi_hero = ContentWeb::with('images')
         ->where('nama_content_web', 'deskripsi_hero') 
         ->first();
@@ -117,6 +121,7 @@ class PageController extends Controller
         'data' => $data,
         'sejarah_home' => $sejarah_home,
         'heading_hero' => $heading_hero,
+        'bg_home' => $bg_home,
         'deskripsi_hero' => $deskripsi_hero,
         'galeri' => $galeri,
         'heading_sejarah_home' => $heading_sejarah_home,

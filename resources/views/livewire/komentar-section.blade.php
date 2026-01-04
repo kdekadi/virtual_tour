@@ -5,7 +5,7 @@
                 class="w-full min-h-[80px] bg-white rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-green-500 transition-all resize-none shadow-sm"
                 placeholder="{{ $parent_id ? 'Membalas komentar...' : 'Tulis komentar...' }}"></textarea>
 
-            <div class="flex justify-between items-center mt-2">
+            <div class="flex justify-end items-center mt-2">
                 @if($parent_id)
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] text-gray-500 italic">Mode membalas aktif</span>

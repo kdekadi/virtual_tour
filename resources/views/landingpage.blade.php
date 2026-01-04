@@ -6,7 +6,7 @@
     <title>Virtual Tour Bukit Trunyan</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {{-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
     <style>
       html {
         scroll-behavior: smooth;
@@ -28,12 +28,12 @@
         <h1 class="text-xl font-bold text-primary">Bukit Trunyan</h1>
 
         <!-- Menu Desktop -->
-        <ul id="navLinks" class="hidden md:flex space-x-6 text-white font-medium transition-colors duration-500">
-            <li><a href="#home" class="hover:text-primary transition">Home</a></li>
-            <li><a href="#sejarah" class="hover:text-primary transition">Sejarah</a></li>
-            <li><a href="#informasi" class="hover:text-primary transition">Informasi</a></li>
-            <li><a href="#galeri" class="hover:text-primary transition">Galeri</a></li>
-            <li><a href="#komentar" class="hover:text-primary transition">Komentar</a></li>
+        <ul id="navLinks" class="hidden md:flex space-x-6 text-white font-medium">
+            <li><a href="#home" data-link="home" class="nav-link">Home</a></li>
+            <li><a href="#sejarah" data-link="sejarah" class="nav-link">Sejarah</a></li>
+            <li><a href="#informasi" data-link="informasi" class="nav-link">Informasi</a></li>
+            <li><a href="#galeri" data-link="galeri" class="nav-link">Galeri</a></li>
+            <li><a href="#komentar" data-link="komentar" class="nav-link">Komentar</a></li>
         </ul>
 
         @if (Route::has('login'))
@@ -99,11 +99,11 @@
     </div>
     <div id="mobileMenu" class="hidden md:hidden bg-white shadow-inner">
         <ul class="flex flex-col text-center space-y-2 py-3 font-medium">
-        <li><a href="#home" class="block py-2 hover:bg-green-100">Home</a></li>
-        <li><a href="#sejarah" class="block py-2 hover:bg-green-100">Sejarah</a></li>
-        <li><a href="#informasi" class="block py-2 hover:bg-green-100">Informasi</a></li>
-        <li><a href="#galeri" class="block py-2 hover:bg-green-100">Galeri</a></li>
-        <li><a href="#komentar" class="block py-2 hover:bg-green-100">Komentar</a></li>
+        <li><a href="#home" class="nav-link-mobile block py-2 hover:bg-green-100">Home</a></li>
+        <li><a href="#sejarah" class="nav-link-mobile block py-2 hover:bg-green-100">Sejarah</a></li>
+        <li><a href="#informasi" class="nav-link-mobile block py-2 hover:bg-green-100">Informasi</a></li>
+        <li><a href="#galeri" class="nav-link-mobile block py-2 hover:bg-green-100">Galeri</a></li>
+        <li><a href="#komentar" class="nav-link-mobile block py-2 hover:bg-green-100">Komentar</a></li>
 
         @if (Route::has('login'))
             @auth
@@ -126,10 +126,21 @@
     </nav>
 
     <!-- Hero -->
+     @if (isset($bg_home) && $bg_home->images->count() > 0)
+            @foreach ($bg_home->images as $image)
     <section
       id="home"
-      class="h-screen bg-cover bg-center flex items-center justify-center relative"
+      class="scroll-mt-24 h-screen bg-cover bg-center flex items-center justify-center relative"
+      style="background-image: url('{{ asset('storage/' . $image->image_path) }}');">
+    @endforeach
+    @else
+    <section
+      id="home"
+      class="scroll-mt-24 h-screen bg-cover bg-center flex items-center justify-center relative"
       style="background-image: url('{{ asset('img/11.jpg') }}');">
+            <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Konten Belum Diatur</h3>
+    </section>
+    @endif
       <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/40"></div>
       <div class="relative text-center text-white px-4">
         @if ($heading_hero) 
@@ -149,7 +160,7 @@
 
 
     <!-- Sejarah -->
-    <section id="sejarah" class="py-16 bg-white">
+    <section id="sejarah" class="scroll-mt-24 py-16 bg-white">
       <div class="max-w-5xl mx-auto px-6">
         @if($heading_sejarah_home)
             <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">
@@ -178,9 +189,8 @@
                   src="{{ asset('storage/' . $image->image_path) }}"
                   alt="Gambar Sejarah Trunyan"  
                   class="w-full h-80 object-cover rounded-xl shadow-2xl border-4 border-white transform hover:scale-[1.02] transition duration-300">
-              <p class="text-center text-sm text-gray-500 mt-2 italic">Desa Trunyan dan pemakaman kuno di bawah pohon Taru Menyan.</p>
-              @endforeach
-              @else
+            @endforeach
+            @else
                 <p class="text-center text-xl text-gray-500 italic mt-8">Gambar belum ditambahkan.</p>
               @endif
             </div>
@@ -191,7 +201,7 @@
 
 
     <!-- Informasi -->
-    <section id="informasi" class="py-16 bg-gray-100">
+    <section id="informasi" class="scroll-mt-24 py-16 bg-gray-100">
       <div class="max-w-6xl mx-auto px-6">
         <h3 class="text-3xl font-bold text-center mb-12 text-gray-800">Informasi Wisata</h3>
         <div class="grid md:grid-cols-4 gap-8 text-center">
@@ -234,9 +244,6 @@
                     <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
                 @endif
                 </div>
-                <p class="mt-4 text-xs text-gray-500 italic">
-                    Pendakian subuh sangat disarankan untuk melihat sunrise.
-                </p>
             </div>
             <div class="p-6 bg-white rounded-xl shadow-xl hover:scale-105 transition flex flex-col justify-between">
                 <div>
@@ -261,8 +268,8 @@
                                 <p class="font-semibold text-gray-700">{{ $data['main']['humidity'] }}%</p>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs text-gray-500">Tekanan Udara</p>
-                                <p class="font-semibold text-gray-700">{{ $data['wind']['speed'] }} m/s</p>
+                                <p class="text-xs text-gray-500">Kecepatan Angin</p>
+                                <p>{{ number_format($data['wind']['speed'] * 3.6) }} km/jam</p>
                             </div>
                         </div>
                     </div>
@@ -275,23 +282,23 @@
         </div>
     </div>
         <div class="bg-gray-100 text-justify  mt-20 rounded-xl max-w-6xl mx-auto text-gray-700">
-          <!-- Deskripsi Singkat -->
+          <!-- Deskripsi -->
           @if($heading_informasi_1)
-          <h3 class="text-2xl font-bold text-gray-900 mb-4">
-            {!! $heading_informasi_1->isi_content_web !!}
-          </h3>
+              <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                {!! $heading_informasi_1->isi_content_web !!}
+              </h3>
           @else
               <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
           @endif
           @if($informasi_1)
-            <p class="leading-relaxed mb-8 text-justify">
-              {!! $informasi_1->isi_content_web !!}
-            </p>
+              <p class="leading-relaxed mb-8 text-justify">
+                {!! $informasi_1->isi_content_web !!}
+              </p>
           @else
               <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
           @endif   
           <br>
-
+            
           @if($heading_informasi_2)
           <h3 class="text-2xl font-bold text-gray-900 mb-4">
             {!! $heading_informasi_2->isi_content_web !!}
@@ -299,7 +306,6 @@
           @else
               <p class="text-justify leading-relaxed text-base text-gray-700 mt-4">Konten belum diatur.</p>
           @endif
-
           @if($tips)
           <p class="text-2xl font-bold text-gray-900 mb-4">
             {!! $tips->isi_content_web !!}
@@ -312,37 +318,53 @@
     </section>
 
     <!-- Galeri -->
-    <section class="bg-white py-12" id="galeri">
-      <h2 class="text-3xl font-semibold text-green-600 text-center mb-10">
+ <section class="scroll-mt-24 bg-white py-12" id="galeri" x-data="{ open: false, imageSrc: '' }">
+    <h2 class="text-3xl font-semibold text-gray-800 text-center mb-10">
         Galeri Tracking Bukit Trunyan
-      </h2>
-      <br>
+    </h2>
 
-      <div class="grid grid-cols-2 px-2 sm:grid-cols-2 md:grid-cols-3 gap-8 px-10">
+    <div class="grid grid-cols-2 px-4 sm:grid-cols-2 md:grid-cols-3 gap-8 px-10">
         @if (isset($galeri) && $galeri->images->count() > 0)
-        @foreach ($galeri->images as $image)
-        <div>
-          <img 
-          src="{{ asset('storage/' . $image->image_path) }}" alt="Galeri Bukit Trunyan"
-            class="w-full h-65 object-cover rounded-xl shadow-lg hover:scale-105 transition-transform duration-300" />
-        </div>
-        @endforeach
+            @foreach ($galeri->images as $image)
+                <div class="shadow-2xl cursor-pointer" 
+                     @click="open = true; imageSrc = '{{ asset('storage/' . $image->image_path) }}'">
+                    <img 
+                        src="{{ asset('storage/' . $image->image_path) }}" 
+                        alt="Galeri Bukit Trunyan"
+                        class="w-full h-64 object-cover rounded-xl shadow-2xl hover:scale-105 transition-transform duration-300" />
+                </div>
+            @endforeach
         @else
-          <p class="text-center text-xl text-gray-500 italic mt-8">Gambar galeri tidak ditemukan.</p>
+            <p class="text-center text-xl text-gray-500 italic mt-8">Gambar galeri tidak ditemukan.</p>
         @endif
-      </div>
-    </section>
+    </div>
+
+    <div x-show="open" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
+         x-cloak
+         @click.self="open = false"
+         @keydown.escape.window="open = false">
+        <button @click="open = false" class="absolute top-5 right-5 text-white text-4xl font-bold">&times;</button>
+        <img :src="imageSrc" class="max-w-full max-h-full rounded-lg shadow-white/10 shadow-2xl">
+    </div>
+</section>
 
 
     <!-- Komentar -->
-    <section id="komentar" class="py-16 bg-white">
+    <section id="komentar" class="scroll-mt-24 py-16 bg-white">
         <h3 class="text-3xl font-bold text-center mb-12">Komentar Pengunjung</h3>
         @livewire('komentar-section')
     </section>
 
     <!-- Footer -->
     <footer class="bg-primary text-white py-6 text-center">
-      <p>© 2025 Virtual Tour Bukit Trunyan | Dikembangkan untuk Project PBL</p>
+      <p>© 2025 Virtual Tour Track Pendakian Bukit Trunyan | Dikembangkan untuk Project PBL</p>
     </footer>
    
   </body>

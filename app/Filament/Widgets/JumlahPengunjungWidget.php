@@ -24,11 +24,11 @@ class JumlahPengunjungWidget extends BaseWidget
                 ->color('danger'),
 
             Stat::make('Visitor Hari Ini', Visitor::whereDate('visit_date', now())->count())
-                ->description('Pengunjung unik hari ini')
+                ->description('Pengunjung web hari ini')
                 ->icon('heroicon-m-user-group')
                 ->color('success'),
 
-            Stat::make('Total Visitor (Bulan Ini)', Visitor::whereMonth('visit_date', now()->month)->count())
+            Stat::make('Total Visitor bulan ini', Visitor::whereMonth('visit_date', now()->month)->count())
                 ->description('Akumulasi bulan ini')
                 ->icon('heroicon-m-chart-bar')
                 ->color('info'),

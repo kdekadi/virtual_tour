@@ -72,7 +72,6 @@ class VisitorChart extends ChartWidget implements HasActions
         return [
             'datasets' => [
                 [
-                    'label' => 'Total Visitor',
                     'data' => $data,
                     'fill' => 'start',
                     'backgroundColor' => '3CB946', 
@@ -83,19 +82,25 @@ class VisitorChart extends ChartWidget implements HasActions
         ];
     }  
 
-//     protected function getOptions(): array
-// {
-//     return [
-//         'scales' => [
-//             'y' => [
-//                 'ticks' => [
-//                     'stepSize' => 1, // Menek 1 angka
-//                     'precision' => 0, 
-//                 ],
-//             ],
-//         ],
-//     ];
-// }
+        protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'display' => false, 
+            ],
+        ],
+            'scales' => [
+                'y' => [
+                    'ticks' => [
+                        'stepSize' => 1, // Menek 1 angka
+                        'precision' => 0, 
+                    ],
+                ],
+            ],
+        ];
+        
+    }
 
     protected function getType(): string
     {

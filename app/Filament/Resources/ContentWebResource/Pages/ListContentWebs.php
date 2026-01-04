@@ -5,7 +5,7 @@ namespace App\Filament\Resources\ContentWebResource\Pages;
 use App\Filament\Resources\ContentWebResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Resources\Components\Tab; // Pastikan import ini ada
+use Filament\Resources\Components\Tab; 
 use Illuminate\Database\Eloquent\Builder;
 
 class ListContentWebs extends ListRecords
@@ -15,7 +15,9 @@ class ListContentWebs extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Tambah Content Web')
+                ->icon('heroicon-s-plus'),
         ];
     }
 

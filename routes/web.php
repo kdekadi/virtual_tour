@@ -47,4 +47,9 @@ Route::get('/virtual-tour-trunyan', [WeatherController::class, 'showTrunyanWeath
 
 
 
+Route::get('/test-validation', function () {
+    request()->validate([
+        'password' => 'required|min:8',
+    ]);
+});
 

@@ -29,12 +29,28 @@ class UserResource extends Resource
         return $form
             ->schema([
                 TextInput::make('username')
-                    ->required(),
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(45)
+                    ->validationMessages([
+                            'unique' => 'Username sudah digunakan.',
+                            'required' => 'Email wajib diisi.',
+                            'email' => 'Format email tidak valid.',
+                    ]),
                 TextInput::make('email')
                     ->email()
+                    ->maxLength(99)
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                            'unique' => 'Email sudah digunakan.',
+                            'required' => 'Email wajib diisi.',
+                            'email' => 'Format email tidak valid.',
+                    ])
                     ->required(),
                 TextInput::make('nomor_telp')
-                    ->label('Nomor Telepon'),
+                    ->label('Nomor Telepon')
+                    ->required(fn (string $context): bool => $context === 'create') 
+                    ->maxLength(45),
                 
                 Select::make('role')
                     ->options([
@@ -43,11 +59,50 @@ class UserResource extends Resource
                     ])
                     ->required(),
 
+                TextInput::make('current_password')
+                    ->label('Password Saat Ini')
+                    ->password()
+                    ->revealable()
+                    ->visible(fn (string $context): bool => $context === 'edit')
+                    ->required(fn (Forms\Get $get) => filled($get('password'))) 
+                    ->rules([
+                        fn (Forms\Get $get, $record) => function (string $attribute, $value, $fail) use ($record) {
+                            //  $record agar mengecek password user yang sedang diedit, bukan admin yang login
+                            if ($record && ! Hash::check($value, $record->password)) {
+                                $fail('Password saat ini tidak cocok.');
+                            }
+                        },
+                    ])
+                    ->dehydrated(false)
+                    ->extraInputAttributes(['novalidate' => 'novalidate']),
+
                 TextInput::make('password')
-                    ->password() // Tipe input password
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state)) 
-                    ->dehydrated(fn ($state) => filled($state)) 
-                    ->required(fn (string $context): bool => $context === 'create') 
+                    ->label(fn (string $context) => $context === 'create' ? 'Password' : 'Masukan Password Baru')
+                    ->password()
+                    ->live() // Memicu perubahan state secara realtime
+                    ->rule('confirmed')
+                    ->revealable()
+                    ->required(fn (string $context): bool => $context === 'create')
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->helperText(fn (string $context) => $context === 'edit' ? 'Kosongkan jika tidak ingin mengubah password.' : null)
+                    ->validationMessages([
+                        'confirmed' => 'Konfirmasi password tidak cocok.',
+                    ]),
+
+                TextInput::make('password_confirmation')
+                    ->label('Konfirmasi Password Baru')
+                    ->password()
+                    // Muncul jika di halaman create ATAU jika password baru sedang diisi
+                    ->visible(fn (Forms\Get $get, string $context) => $context === 'create' || filled($get('password')))
+                    ->required(fn (Forms\Get $get, string $context) => $context === 'create' || filled($get('password')))
+                    ->dehydrated(false)
+                    ->extraInputAttributes(['novalidate' => 'novalidate']) 
+                    ->revealable()
+                    ->validationMessages([
+                        'required' => 'Konfirmasi password wajib diisi.',
+                        'confirmed' => 'Konfirmasi password tidak cocok.',
+                    ]),
             ]);
     }
 
@@ -65,6 +120,7 @@ class UserResource extends Resource
                 
                 TextColumn::make('role')
                     ->label('Role')
+                    ->searchable()
                     ->sortable(), 
                 
                 TextColumn::make('nomor_telp')

@@ -83,7 +83,7 @@
 
 
             <div class="text-left mt-8">
-                <a href="/#sejarah" class="inline-block px-8 py-3 text-lg bg-green-700 text-white font-bold rounded-lg shadow-xl hover:bg-green-800 transition transform hover:scale-105">
+                <a href="/#sejarah" class="inline-block mt-6 px-5 py-2 text-base bg-primary text-white font-semibold rounded-lg hover:bg-green-700 transition">
                    &laquo; Kembali ke Home
                 </a>
             </div>

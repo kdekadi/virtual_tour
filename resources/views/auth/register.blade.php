@@ -7,14 +7,13 @@
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
 </head>
 
 <body class="h-screen bg-cover bg-center flex items-center justify-center relative font-sans"
       style="background-image: url('{{ asset('img/11.jpg') }}');">
     <div class="w-full max-w-md p-8 rounded-xl shadow-lg"
      style="background-color: rgba(17, 24, 39, 0.8);">
-
         
         <h2 class="text-3xl font-bold text-center text-white mb-2">
             Daftar Akun
@@ -26,7 +25,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('register') }}" class="space-y-6">
+        <form method="POST" action="{{ route('register') }}" novalidate class="space-y-6">
             @csrf
             
             <div>

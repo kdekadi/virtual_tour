@@ -37,8 +37,8 @@ class ContentWebResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->maxLength(200)
                     ->hidden(fn ($context) => $context === 'edit') 
-                    ->visible(fn ($context) => $context === 'create')
-                    ->helperText('Gunakan format snake_case. Contoh: sejarah_home'),
+                    ->visible(fn ($context) => $context === 'create'),
+                    // ->helperText('Gunakan format snake_case. Contoh: sejarah_home'),
 
                 Forms\Components\RichEditor::make('isi_content_web') 
                     ->label('Isi Konten Teks')
@@ -128,4 +128,5 @@ class ContentWebResource extends Resource
             'edit' => Pages\EditContentWeb::route('/{record}/edit'),
         ];
     }
+    
 }
